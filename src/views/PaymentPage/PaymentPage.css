@@ -1,0 +1,81 @@
+/* PaymentPage.css */
+
+.payment-container {
+  max-width: 600px; /* 너비 확장 */
+  margin: 0 auto;
+  text-align: left; /* 텍스트 왼쪽 정렬 */
+  padding: 30px;
+  background-color: white; /* 전체 배경색을 흰색으로 설정 */
+  border-radius: 10px; /* 둥근 모서리 추가 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 추가 */
+}
+
+.payment-container h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.selected-plan {
+  padding: 20px;
+  text-align: left;
+  border: 2px solid #ccc; /* 외곽선 추가 */
+  border-radius: 10px;
+}
+
+.plan-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: black;
+}
+
+.plan-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: black; /* 텍스트를 흰색으로 */
+}
+
+.plan-period {
+  font-size: 14px;
+  color: #555;
+  margin-top: 10px;
+}
+
+.payment-container .price {
+  color: black; /* 텍스트를 흰색으로 */
+}
+
+.period {
+  color: #777;
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+#payment-method {
+  margin-top: 20px; /* 추가적인 공간을 위해 마진 추가 */
+}
+
+#agreement {
+  margin-top: 20px; /* 추가적인 공간을 위해 마진 추가 */
+}
+
+.confirm-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.confirm-button:hover {
+  background-color: #0056b3;
+}
+
+.free-plan-message {
+  font-size: 14px;
+  color: red;
+  margin-top: 10px;
+}

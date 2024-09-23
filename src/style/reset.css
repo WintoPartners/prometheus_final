@@ -1,0 +1,251 @@
+@charset "UTF-8";
+
+/* font */
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Black.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-Black.woff") format("woff");
+  font-weight: 900;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-ExtraBold.woff") format("woff");
+  font-weight: 800;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-Bold.woff") format("woff");
+  font-weight: 700;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-display: auto;
+}
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-Medium.woff") format("woff");
+  font-weight: 500;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-Regular.woff") format("woff");
+  font-weight: 400;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-ExtraLight.woff") format("woff");
+  font-weight: 300;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-Light.woff") format("woff");
+  font-weight: 200;
+  font-display: auto;
+}
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff") format("woff"), local("Pretendard"), url("/public/assets/fonts/Pretendard-Thin.woff") format("woff");
+  font-weight: 100;
+  font-display: auto;
+}
+
+body,
+html {
+  font-family: Pretendard, serif;
+  color: #000;
+}
+
+/* CSS RESET */
+html,
+body,
+div,
+span,
+object,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+em,
+img,
+ins,
+q,
+strong,
+sub,
+sup,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+a,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  color: var(--white);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+  -webkit-text-size-adjust: none; /*세로모드에서 가로모드로 전환할때 텍스트가 약간 커지는 현상 방지*/
+  box-sizing: border-box;
+  word-break: keep-all;
+}
+html, body {height: 100%;}
+#root{height: 100%;}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+a,
+ol,
+p,
+table,
+ul,
+dl {
+  list-style: none;
+  z-index: 1;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: none;
+}
+
+em,
+i,
+address {
+  font-style: normal;
+  font-weight: normal;
+}
+
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+img,
+fieldset {
+  border: 0;
+}
+img {width: 100%;}
+
+legend,
+caption {
+  display: none;
+}
+
+textarea {
+  resize: none;
+}
+
+textarea,
+input {
+  -webkit-border-raidus: 1px;
+  -mox-border-radius: 1px;
+  border-radius: 1px;
+  @inclue x-appearance(none); /*form요소의 기본 스타일을 없앰*/
+}
+
+label,
+button {
+  cursor: pointer;
+}
+
+button {
+  border: 0;
+  outline: 0;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+a {
+  color: #696f74;
+  text-decoration: none;
+  cursor: pointer;
+}
+a:link,
+a:hover,
+a:active,
+a:visited {
+  color: #696f74;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: NanumGothic, "Malgun Gothic", dotum, "돋움", sans-serif;
+}
+
+
+.base-layout {background-color: orange;}
