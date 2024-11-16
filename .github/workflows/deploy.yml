@@ -45,8 +45,12 @@ jobs:
         port: 2222
         command_timeout: "20m"
         script: |
-          # Node.js 16.x 설치 (CentOS 7 호환)
-          curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
+          # 기존 Node.js 레포지토리 제거
+          sudo rm -rf /etc/yum.repos.d/nodesource*
+          sudo yum clean all
+          
+          # Node.js 14.x 설치 (CentOS 7 호환)
+          curl -fsSL https://rpm.nodesource.com/setup_14.x | sudo bash -
           sudo yum install -y nodejs
           
           # npm 업그레이드
