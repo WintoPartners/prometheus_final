@@ -45,9 +45,12 @@ jobs:
         port: 2222
         command_timeout: "20m"
         script: |
-          # Node.js 설치 (CentOS/RHEL 용)
-          curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+          # Node.js 16.x 설치 (CentOS 7 호환)
+          curl -fsSL https://rpm.nodesource.com/setup_16.x | sudo bash -
           sudo yum install -y nodejs
+          
+          # npm 업그레이드
+          sudo npm install -g npm@latest
           
           # PM2 전역 설치
           sudo npm install -g pm2
