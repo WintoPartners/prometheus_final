@@ -47,7 +47,7 @@ jobs:
         script: |
           cd /home/prometheus
           rm -rf *
-          npm install -g pm
+          npm install -g pm2
           cp -r /home/${{ secrets.NCP_SERVER_USER }}/build/* .
           pm2 delete prometheus || true
           pm2 serve /home/prometheus 80 --name prometheus
