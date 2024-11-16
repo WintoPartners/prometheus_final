@@ -63,8 +63,7 @@ jobs:
           # PM2 업데이트 및 저장
           pm2 update
           
-          # 배포 스크립트
-          cd /home/prometheus
+          cd /home/prometheu
           rm -rf *
           cp -r /home/${{ secrets.NCP_SERVER_USER }}/build/* .
           pm2 delete prometheus || true
