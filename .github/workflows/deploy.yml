@@ -1,0 +1,49 @@
+name: Deploy to NCP Server
+
+on:
+  push:
+    branches: [ ncp-migration ]
+  pull_request:
+    branches: [ ncp-migration ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build
+      run: npm run build
+      env:
+        CI: false
+        
+    - name: Deploy to Server
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.NCP_SERVER_IP }}
+        username: ${{ secrets.NCP_SERVER_USER }}
+        password: ${{ secrets.NCP_SERVER_PASSWORD }}  # SSH 키 대신 패스워드 사용
+        source: "build/*"
+        target: "/home/prometheus"
+        strip_components: 1
+        debug: true
+
+    - name: Execute remote commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.NCP_SERVER_IP }}
+        username: ${{ secrets.NCP_SERVER_USER }}
+        password: ${{ secrets.NCP_SERVER_PASSWORD }}  # SSH 키 대신 패스워드 사용
+        script: |
+          cd /home/prometheus
+          pm2 delete prometheus || true
+          pm2 serve /home/prometheus 3000 --name prometheus
