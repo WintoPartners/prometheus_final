@@ -52,18 +52,23 @@ jobs:
           sudo rm -rf /etc/yum.repos.d/nodesource*
           sudo yum clean all
           
-          # Node.js 14.x 설치 (CentOS 7 호환)
+          # Node.js 14.x 설치
           curl -fsSL https://rpm.nodesource.com/setup_14.x | sudo bash -
           sudo yum install -y nodejs
           
-          # 기본 npm 사용 (Node.js 14.x와 함께 설치되는 버전)
+          # PM2 제거 후 재설치
+          sudo npm uninstall -g pm2
+          sudo npm install -g pm2@5.4.3
           
-          # PM2 호환 버전 설치
-          sudo npm install -g pm2@4.5.6
+          # PM2 업데이트 및 저장
+          pm2 update
           
           # 배포 스크립트
           cd /home/prometheus
           rm -rf *
           cp -r /home/${{ secrets.NCP_SERVER_USER }}/build/* .
           pm2 delete prometheus || true
-          pm2 serve /home/prometheus 80 --name prometheus
+          pm2 serve . 80 --name prometheus
+          
+          # PM2 상태 저장
+          pm2 save
