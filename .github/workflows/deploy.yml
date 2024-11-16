@@ -42,7 +42,7 @@ jobs:
         host: ${{ secrets.NCP_SERVER_IP }}
         username: ${{ secrets.NCP_SERVER_USER }}
         password: ${{ secrets.NCP_SERVER_PASSWORD }}
-        port: 22
+        port: 443
         command_timeout: "20m"
         script: |
           cd /home/prometheus
