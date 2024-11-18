@@ -32,7 +32,7 @@ jobs:
         host: ${{ secrets.NCP_SERVER_IP }}
         username: ${{ secrets.NCP_SERVER_USER }}
         password: ${{ secrets.NCP_SERVER_PASSWORD }}
-        port: 2222
+        port: 8080
         source: "build/*"
         target: "/home/${{ secrets.NCP_SERVER_USER }}"
         
@@ -42,7 +42,7 @@ jobs:
         host: ${{ secrets.NCP_SERVER_IP }}
         username: ${{ secrets.NCP_SERVER_USER }}
         password: ${{ secrets.NCP_SERVER_PASSWORD }}
-        port: 2222
+        port: 8080
         command_timeout: "20m"
         script: |
           # 기존 Node.js와 npm 완전 제거
@@ -67,7 +67,7 @@ jobs:
           rm -rf *
           cp -r /home/${{ secrets.NCP_SERVER_USER }}/build/* .
           pm2 delete prometheus || true
-          pm2 serve . 80 --name prometheus
+          pm2 serve . 8080 --name prometheus
           
           # PM2 상태 저장
           pm2 save
