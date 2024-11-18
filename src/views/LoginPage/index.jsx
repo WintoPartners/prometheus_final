@@ -39,11 +39,11 @@ function Login() {
         });
       } else {
         alert('유효하지 않은 접근입니다.');
-        window.location.href = ilovesales_url;
+        // window.location.href = ilovesales_url;
       }
     } else {
       alert('잘못된 접근입니다. 아이러브세일즈를 통해 접근해주세요.');
-      window.location.href = ilovesales_url;
+      // window.location.href = ilovesales_url;
     }
   }, [navigate]);
 
