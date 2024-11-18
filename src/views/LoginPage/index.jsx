@@ -24,7 +24,7 @@ function Login() {
     */
     const referrer = document.referrer;
     console.log('Referrer:', referrer);
-    if (referrer.includes('ilovesales.site')) {
+    if (referrer.includes('ilovesales.site') || true) {
       console.log('This page was accessed via redirection from:', referrer);
 
       if (customParam) {
