@@ -24,7 +24,7 @@ function Login() {
     */
     const referrer = document.referrer;
     console.log('Referrer:', referrer);
-    if (referrer.includes('ilovesales.site') || true) {
+    if (referrer.includes('ilovesales.site')) {
       console.log('This page was accessed via redirection from:', referrer);
 
       if (customParam) {
@@ -34,7 +34,7 @@ function Login() {
             window.location.href = `${process.env.REACT_APP_PAGE}/init`;
           } else {
             alert('프로메테우스 서비스는 유료 상품으로 제공되고 있습니다. 아이러브세일즈 페이지를 참고해주세요.');
-            window.location.href = ilovesales_url;
+            // window.location.href = ilovesales_url;
           }
         });
       } else {
