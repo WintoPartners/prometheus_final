@@ -67,7 +67,7 @@ jobs:
           rm -rf *
           cp -r /home/${{ secrets.NCP_SERVER_USER }}/build/* .
           pm2 delete prometheus || true
-          pm2 serve . 80 --name prometheus
+          pm2 serve . 3000 --name prometheus
           
           # PM2 상태 저장
           pm2 save
