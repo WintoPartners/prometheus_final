@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from './views/ProtectedPage/AuthContext'; // AuthProvider를 임포트
 import * as Pages from "./views";
 import StepperLayout from "layout/StepperLayout";
-import ProtectedRoute from './views/ProtectedPage';
 
 
 const App = () => {
@@ -12,8 +11,8 @@ const App = () => {
         <Routes>
           {/* Stepper Page Layout */}
           <Route element={<StepperLayout />}>
-            <Route path="/loading" element={<ProtectedRoute><Pages.LoadingPage /></ProtectedRoute>} />
-            <Route path="/init" element={<Pages.InitPage />}/>
+            <Route path="/loading" element={<Pages.LoadingPage />} />
+            <Route path="/init" element={<Pages.InitPage />} />
             <Route path="/step/:type" element={<Pages.StepperPage />} />
             <Route path="/result" element={<Pages.ResultPage />} />
             <Route path="/profile" element={<Pages.ProfilePage />} />
@@ -21,8 +20,8 @@ const App = () => {
             <Route path="/subscription" element={<Pages.SubscriptionPage />} />
             <Route path="/payment" element={<Pages.PaymentPage />} />
             <Route path="/success" element={<Pages.SuccessPage />} />
-            <Route path="/fail" element={<ProtectedRoute><Pages.FailPage /></ProtectedRoute>} />
-            <Route path="/status" element={<ProtectedRoute><Pages.StatusPage /></ProtectedRoute>} />
+            <Route path="/fail" element={<Pages.FailPage />} />
+            <Route path="/status" element={<Pages.StatusPage />} />
             <Route path="/" element={<Pages.LoginPage />} />
             <Route path="/oauth" element={<Pages.OAuthCallbackPage />} />
             <Route path="/noauth" element={<Pages.NaverCallbackPage />} />
