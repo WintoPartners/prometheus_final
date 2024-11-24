@@ -14,13 +14,13 @@ const App = () => {
           <Route element={<StepperLayout />}>
             <Route path="/loading" element={<ProtectedRoute><Pages.LoadingPage /></ProtectedRoute>} />
             <Route path="/init" element={<Pages.InitPage />}/>
-            <Route path="/step/:type" element={<ProtectedRoute><Pages.StepperPage /></ProtectedRoute>} />
-            <Route path="/result" element={<Pages.ResultPage/>}
-            <Route path="/profile" element={<ProtectedRoute><Pages.ProfilePage /></ProtectedRoute>} />
-            <Route path="/profileDetail/:id" element={<ProtectedRoute><Pages.ProfileDetailPage /></ProtectedRoute>} />
-            <Route path="/subscription" element={<ProtectedRoute><Pages.SubscriptionPage /></ProtectedRoute>} />
-            <Route path="/payment" element={<ProtectedRoute><Pages.PaymentPage /></ProtectedRoute>} />
-            <Route path="/success" element={<ProtectedRoute><Pages.SuccessPage /></ProtectedRoute>} />
+            <Route path="/step/:type" element={<Pages.StepperPage />} />
+            <Route path="/result" element={<Pages.ResultPage />} />
+            <Route path="/profile" element={<Pages.ProfilePage />} />
+            <Route path="/profileDetail/:id" element={<Pages.ProfileDetailPage />} />
+            <Route path="/subscription" element={<Pages.SubscriptionPage />} />
+            <Route path="/payment" element={<Pages.PaymentPage />} />
+            <Route path="/success" element={<Pages.SuccessPage />} />
             <Route path="/fail" element={<ProtectedRoute><Pages.FailPage /></ProtectedRoute>} />
             <Route path="/status" element={<ProtectedRoute><Pages.StatusPage /></ProtectedRoute>} />
             <Route path="/" element={<Pages.LoginPage />} />
