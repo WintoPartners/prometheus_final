@@ -43,7 +43,8 @@ function Login() {
       }
     } else {
       alert('잘못된 접근입니다. 아이러브세일즈를 통해 접근해주세요.');
-      // window.location.href = ilovesales_url;
+      console.log('Referrer:', referrer);
+      window.location.href = ilovesales_url;
     }
   }, [navigate]);
 
