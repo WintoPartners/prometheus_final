@@ -81,8 +81,8 @@ function Login() {
         });
         const data = await response.json();
         if (response.ok) {
-            // navigate('/init');
-            window.location.href = `${process.env.REACT_APP_PAGE}/init`;
+            navigate('/init');
+            // window.location.href = `${process.env.REACT_APP_PAGE}/init`;
         } else {
             throw new Error(data.message);
         }
