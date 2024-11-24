@@ -88,7 +88,6 @@ const color = [
 function ResultPage() {
   
   const navigate = useNavigate();
-  const [funcDesc, setFuncDesc] = useState('');
   const [rfpData, setRfpData] = useState({
     pro_name: '',
     pro_budget: '',
@@ -101,6 +100,56 @@ function ResultPage() {
     pro_reference: ''
   });
   const [iaData, setIaData] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [funcDesc, setFuncDesc] = useState('');
+
+  // 초기 데이터 로딩 함수
+  const loadInitialData = async () => {
+    try {
+      // retry 로직과 동일하게 데이터 생성 요청
+      await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null, {
+        withCredentials: true
+      });
+
+      // 데이터 가져오기
+      const projectInfo = await fetchTasks();
+      const iaInfo = await setIA();
+      const tasksFromServer = await fetchWBS();
+      const funcDescData = await fetchFuncDesc();
+
+      // 상태 업데이트
+      setRfpData(projectInfo[0]);
+      setIaData(preprocessData(iaInfo));
+      setFuncDesc(funcDescData[0]);
+
+      // WBS 데이터 처리
+      const tasksWithColor = tasksFromServer.map((task, index) => ({
+        ...task,
+        color: color[index % color.length].back,
+      }));
+      setTasks(tasksWithColor);
+
+    } catch (error) {
+      console.error('Failed to load initial data:', error);
+    }
+  };
+
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  // 기존의 retry 함수 수정
+  const retry = async () => {
+    const confirmRetry = window.confirm("같은 내용으로 재분석 하시겠습니까?");
+    
+    if(confirmRetry) {
+      navigate("/loading");
+      await loadInitialData();
+      navigate("/result");
+      window.location.reload();
+    }
+  };
+
   function preprocessData(iaData) {
     // 초기 상태값 설정
     let depth1Count = {}, depth2Count = {}, depth3Count = {};
@@ -158,82 +207,6 @@ function ResultPage() {
     return iaData;
   }
 
-  const retry = async () => {
-    const confirmRetry = window.confirm("같은 내용으로 재분석 하시겠습니까?");
-
-    if(confirmRetry){
-      try {
-        // 선택된 agencyNumbers와 사용자 IP를 서버로 전송
-        navigate("/loading");
-        // await axios.post('https://metheus.store/retry',  null,{
-        //   withCredentials: true // 쿠키 포함 설정
-        // });
-        await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null,{
-          withCredentials: true // 쿠키 포함 설정
-        });
-      } catch (error) {
-        console.error('Error sending agency numbers:', error);
-      }
-      navigate("/result");
-      window.location.reload();
-    }else{
-      return;
-    }
-    };
-    const [tasks, setTasks] = useState([]);
-  useEffect(() => {
-    // RFP 데이터를 가져오는 비동기 함수
-    const fetchRfpData = async () => {
-      try {
-        const projectInfo = await fetchTasks();
-        setRfpData(projectInfo[0]);
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-      } 
-      // 가져온 데이터로 상태 업데이트
-    };
-    const fetchIaData = async () => {
-      try {
-        const iaInfo = await setIA();
-        setIaData(preprocessData(iaInfo)); // 가져온 데이터로 상태 업데이트
-      } catch (error) {
-        console.error('Failed to fetch IA data:', error);
-      }
-    };
-    const getTasks = async () => {
-      try {
-        // WBS 데이터를 서버에서 불러옵니다.
-        const tasksFromServer = await fetchWBS();
-        // 불러온 데이터에 색상을 할당합니다.
-        const tasksWithColor = tasksFromServer.map((task, index) => ({
-          ...task,
-          // 색상 배열에서 순환적으로 색상을 선택합니다.
-          color: color[index % color.length].back,
-        }));
-        setTasks(tasksWithColor);
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-      }
-    };
-
-    const fetchFuncDescData = async () => {
-      try {
-        const funcDescData = await fetchFuncDesc();
-        setFuncDesc(funcDescData[0]);
-
-      } catch (error) {
-        console.error('Failed to fetch funcDesc:', error);
-      }
-    };
-
-    
-    fetchRfpData();
-    fetchIaData();
-    getTasks();
-    fetchFuncDescData();
-  }, []);
-  
-    
   const savePDF = () => {
     const input = document.getElementById("result-wrap");
     if (!input) {
@@ -538,7 +511,7 @@ function ResultPage() {
               {/* <div className="middle-card">
                 <div className="middle-card__heading">
                   <img className="img" src={ICON.PENCIL} alt="icon" />
-                  <p>서비스 스펙 / 환경 / 방식</p>
+                  <p>서비스 스펙 / 경 / 방식</p>
                 </div>
 
                 <div className="middle-card__contents">
