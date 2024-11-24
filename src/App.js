@@ -15,7 +15,7 @@ const App = () => {
             <Route path="/loading" element={<ProtectedRoute><Pages.LoadingPage /></ProtectedRoute>} />
             <Route path="/init" element={<Pages.InitPage />}/>
             <Route path="/step/:type" element={<ProtectedRoute><Pages.StepperPage /></ProtectedRoute>} />
-            <Route path="/result" element={<ProtectedRoute><Pages.ResultPage /></ProtectedRoute>} />
+            <Route path="/result" element={<Pages.ResultPage/>}
             <Route path="/profile" element={<ProtectedRoute><Pages.ProfilePage /></ProtectedRoute>} />
             <Route path="/profileDetail/:id" element={<ProtectedRoute><Pages.ProfileDetailPage /></ProtectedRoute>} />
             <Route path="/subscription" element={<ProtectedRoute><Pages.SubscriptionPage /></ProtectedRoute>} />
