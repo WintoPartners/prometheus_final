@@ -4,7 +4,7 @@ import * as Pages from "./views";
 import StepperLayout from "layout/StepperLayout";
 
 // 테스트용 단순 App 컴포넌트
-const TestApp = () => {
+const App = () => {
   return (
     <Router>
       <Routes>
@@ -32,34 +32,4 @@ const TestApp = () => {
   );
 };
 
-// 각 라우트에 대한 테스트
-describe('Route Tests', () => {
-  test('renders result page', () => {
-    window.history.pushState({}, '', '/result');
-    render(<TestApp />);
-    // ResultPage가 렌더링되는지 확인
-    expect(document.querySelector('.result-card')).toBeInTheDocument();
-  });
-
-  test('renders loading page', () => {
-    window.history.pushState({}, '', '/loading');
-    render(<TestApp />);
-    // LoadingPage가 렌더링되는지 확인
-    expect(document.querySelector('.loading-wrap')).toBeInTheDocument();
-  });
-
-  test('renders init page', () => {
-    window.history.pushState({}, '', '/init');
-    render(<TestApp />);
-    // InitPage가 렌더링되는지 확인
-    expect(document.querySelector('.init-page')).toBeInTheDocument();
-  });
-
-  // 다른 라우트들에 대한 테스트도 추가 가능
-});
-
-// 기본 렌더링 테스트
-test('renders without crashing', () => {
-  render(<TestApp />);
-  expect(document.querySelector('div')).toBeInTheDocument();
-});
+export default App;
