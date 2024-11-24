@@ -13,7 +13,7 @@ const App = () => {
           {/* Stepper Page Layout */}
           <Route element={<StepperLayout />}>
             <Route path="/loading" element={<ProtectedRoute><Pages.LoadingPage /></ProtectedRoute>} />
-            <Route path="/init" element={<ProtectedRoute><Pages.InitPage /></ProtectedRoute>} />
+            <Route path="/init" element={<Pages.InitPage />}/>
             <Route path="/step/:type" element={<ProtectedRoute><Pages.StepperPage /></ProtectedRoute>} />
             <Route path="/result" element={<ProtectedRoute><Pages.ResultPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Pages.ProfilePage /></ProtectedRoute>} />
