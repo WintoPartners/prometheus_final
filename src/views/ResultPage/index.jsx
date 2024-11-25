@@ -9,6 +9,7 @@ import { Document,AlignmentType, Packer, Paragraph} from 'docx';
 import { saveAs } from 'file-saver';
 
 async function fetchTasks() {
+  console.log("fetchTasks 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setProject`, {
     credentials: 'include',
     method: 'POST',
@@ -24,6 +25,7 @@ async function fetchTasks() {
 }
 
 async function setIA() {
+  console.log("setIA 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setIA`, {
     credentials: 'include',
     method: 'POST',
@@ -37,7 +39,9 @@ async function setIA() {
   }
   return response.json();
 }
+
 async function fetchWBS() {
+  console.log("fetchWBS 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setWbs`, {
     credentials: 'include',
     method: 'POST',
@@ -52,7 +56,9 @@ async function fetchWBS() {
   }
   return response.json();
 }
+
 async function fetchFuncDesc() {
+  console.log("fetchFuncDesc 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setFuncDesc`, {
     credentials: 'include',
     method: 'POST',
@@ -86,6 +92,7 @@ const color = [
   { back: "#d1a3ff" }  // 라벤더
 ];
 function ResultPage() {
+  console.log("=== ResultPage 컴포넌트 렌더링 시작 ===");
   
   const navigate = useNavigate();
   const [rfpData, setRfpData] = useState({
@@ -110,27 +117,27 @@ function ResultPage() {
       
       // retry 로직과 동일하게 데이터 생성
       console.log("2. retry API 호출 시작");
-      await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null, {
+      const retryResponse = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null, {
         withCredentials: true
       });
-      console.log("3. retry API 호출 완료");
+      console.log("3. retry API 응답:", retryResponse);
 
       // 데이터 가져오기
       console.log("4. fetchTasks 시작");
       const projectInfo = await fetchTasks();
-      console.log("5. fetchTasks 결과:", projectInfo);
+      console.log("5. projectInfo 데이터:", projectInfo);
 
       console.log("6. setIA 시작");
       const iaInfo = await setIA();
-      console.log("7. setIA 결과:", iaInfo);
+      console.log("7. iaInfo 데이터:", iaInfo);
 
       console.log("8. fetchWBS 시작");
       const tasksFromServer = await fetchWBS();
-      console.log("9. fetchWBS 결과:", tasksFromServer);
+      console.log("9. WBS 데이터:", tasksFromServer);
 
       console.log("10. fetchFuncDesc 시작");
       const funcDescData = await fetchFuncDesc();
-      console.log("11. fetchFuncDesc 결과:", funcDescData);
+      console.log("11. funcDesc 데이터:", funcDescData);
 
       // 상태 업데이트
       console.log("12. 상태 업데이트 시작");
@@ -138,7 +145,6 @@ function ResultPage() {
       setIaData(preprocessData(iaInfo));
       setFuncDesc(funcDescData[0]);
 
-      // WBS 데이터 처리
       const tasksWithColor = tasksFromServer.map((task, index) => ({
         ...task,
         color: color[index % color.length].back,
@@ -147,12 +153,16 @@ function ResultPage() {
       console.log("13. 상태 업데이트 완료");
 
     } catch (error) {
-      console.error('Failed to load initial data:', error);
+      console.error('데이터 로딩 실패:', error);
     }
   };
 
   useEffect(() => {
+    console.log("=== useEffect 실행 ===");
     loadInitialData();
+    return () => {
+      console.log("=== useEffect 클린업 ===");
+    };
   }, []);
 
   // retry 함수 수정
@@ -161,21 +171,27 @@ function ResultPage() {
     const confirmRetry = window.confirm("같은 내용으로 재분석 하시겠습니까?");
     
     if(confirmRetry) {
-      console.log("B. 로딩 페이지로 이동");
-      navigate("/loading");
-      
-      console.log("C. loadInitialData 호출");
-      await loadInitialData();
-      
-      console.log("D. 결과 페이지로 이동");
-      navigate("/result");
-      
-      console.log("E. 페이지 새로고침");
-      window.location.reload();
+      try {
+        console.log("B. 로딩 페이지로 이동");
+        navigate("/loading");
+        
+        console.log("C. loadInitialData 호출");
+        await loadInitialData();
+        
+        console.log("D. 결과 페이지로 이동");
+        navigate("/result");
+        
+        console.log("E. 페이지 새로고침 전");
+        window.location.reload();
+      } catch (error) {
+        console.error("retry 실행 중 에러:", error);
+      }
     }
   };
 
+  // 데이터 전처리 함수
   function preprocessData(iaData) {
+    console.log("preprocessData 시작:", iaData);
     // 초기 상태값 설정
     let depth1Count = {}, depth2Count = {}, depth3Count = {};
   
@@ -229,8 +245,16 @@ function ResultPage() {
       }
     });
   
+    console.log("preprocessData 완료");
     return iaData;
   }
+
+  console.log("현재 상태:", {
+    rfpData,
+    iaData,
+    tasks,
+    funcDesc
+  });
 
   const savePDF = () => {
     const input = document.getElementById("result-wrap");
@@ -239,6 +263,8 @@ function ResultPage() {
       return;
     }
     
+    console.log("PDF 저장을 위한 요소가 확인되었습니다:", input);
+
     const headings = input.querySelectorAll(".result-heading");
     headings.forEach(heading => {
       heading.style.borderRadius = "0";
