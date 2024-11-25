@@ -108,7 +108,7 @@ function ResultPage() {
     try {
       console.log("1. loadInitialData 시작");
       
-      // retry 로직과 동일하게 데이터 생성 요청
+      // retry 로직과 동일하게 데이터 생성
       console.log("2. retry API 호출 시작");
       await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null, {
         withCredentials: true
