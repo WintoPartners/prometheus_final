@@ -29,7 +29,7 @@ async function setIA() {
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setIA`, {
     credentials: 'include',
     method: 'POST',
-  }); // API 엔드포인트는 예시입니다.
+  }); // API 엔드���인트는 예시입니다.
   // const response = await fetch('https://metheus.store/setIA', {
   //   credentials: 'include',
   //   method: 'POST',
@@ -92,7 +92,7 @@ const color = [
   { back: "#d1a3ff" }  // 라벤더
 ];
 function ResultPage() {
-  console.log("=== ResultPage 컴포넌트 렌더링 시작 ===");
+  window.console.log('ResultPage 렌더링');
   
   const navigate = useNavigate();
   const [rfpData, setRfpData] = useState({
@@ -112,21 +112,20 @@ function ResultPage() {
 
   // 초기 데이터 로딩 함수
   const loadInitialData = async () => {
+    window.console.log('loadInitialData 시작');
     try {
-      console.log("1. loadInitialData 시작");
+      const retryResponse = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/retry`, 
+        null, 
+        { withCredentials: true }
+      );
+      window.console.log('retry 응답:', retryResponse);
       
-      // retry 로직과 동일하게 데이터 생성
-      console.log("2. retry API 호출 시작");
-      const retryResponse = await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null, {
-        withCredentials: true
-      });
-      console.log("3. retry API 응답:", retryResponse);
-
-      // 데이터 가져오기
-      console.log("4. fetchTasks 시작");
+      // 각 API 호출 전에 URL 출력
+      window.console.log('API URL:', `${process.env.REACT_APP_API_ENDPOINT}/setProject`);
       const projectInfo = await fetchTasks();
-      console.log("5. projectInfo 데이터:", projectInfo);
-
+      window.console.log('projectInfo:', projectInfo);
+      
       console.log("6. setIA 시작");
       const iaInfo = await setIA();
       console.log("7. iaInfo 데이터:", iaInfo);
@@ -153,12 +152,14 @@ function ResultPage() {
       console.log("13. 상태 업데이트 완료");
 
     } catch (error) {
-      console.error('데이터 로딩 실패:', error);
+      window.console.error('에러 발생:', error);
+      // 에러 객체 자세히 출력
+      window.console.dir(error);
     }
   };
 
   useEffect(() => {
-    console.log("=== useEffect 실행 ===");
+    window.console.log('useEffect 실행');
     loadInitialData();
     return () => {
       console.log("=== useEffect 클린업 ===");
@@ -505,6 +506,12 @@ function ResultPage() {
         console.error('Error creating document:', err);
       });
     };
+
+  // 현재 환경변수 확인
+  window.console.log('현재 환경변수:', {
+    NODE_ENV: process.env.NODE_ENV,
+    API_ENDPOINT: process.env.REACT_APP_API_ENDPOINT
+  });
 
   return (
     <div className="contents">
