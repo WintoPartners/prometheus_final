@@ -106,18 +106,34 @@ function ResultPage() {
   // 초기 데이터 로딩 함수
   const loadInitialData = async () => {
     try {
+      console.log("1. loadInitialData 시작");
+      
       // retry 로직과 동일하게 데이터 생성 요청
+      console.log("2. retry API 호출 시작");
       await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null, {
         withCredentials: true
       });
+      console.log("3. retry API 호출 완료");
 
       // 데이터 가져오기
+      console.log("4. fetchTasks 시작");
       const projectInfo = await fetchTasks();
+      console.log("5. fetchTasks 결과:", projectInfo);
+
+      console.log("6. setIA 시작");
       const iaInfo = await setIA();
+      console.log("7. setIA 결과:", iaInfo);
+
+      console.log("8. fetchWBS 시작");
       const tasksFromServer = await fetchWBS();
+      console.log("9. fetchWBS 결과:", tasksFromServer);
+
+      console.log("10. fetchFuncDesc 시작");
       const funcDescData = await fetchFuncDesc();
+      console.log("11. fetchFuncDesc 결과:", funcDescData);
 
       // 상태 업데이트
+      console.log("12. 상태 업데이트 시작");
       setRfpData(projectInfo[0]);
       setIaData(preprocessData(iaInfo));
       setFuncDesc(funcDescData[0]);
@@ -128,6 +144,7 @@ function ResultPage() {
         color: color[index % color.length].back,
       }));
       setTasks(tasksWithColor);
+      console.log("13. 상태 업데이트 완료");
 
     } catch (error) {
       console.error('Failed to load initial data:', error);
@@ -138,14 +155,22 @@ function ResultPage() {
     loadInitialData();
   }, []);
 
-  // 기존의 retry 함수 수정
+  // retry 함수 수정
   const retry = async () => {
+    console.log("A. retry 함수 시작");
     const confirmRetry = window.confirm("같은 내용으로 재분석 하시겠습니까?");
     
     if(confirmRetry) {
+      console.log("B. 로딩 페이지로 이동");
       navigate("/loading");
+      
+      console.log("C. loadInitialData 호출");
       await loadInitialData();
+      
+      console.log("D. 결과 페이지로 이동");
       navigate("/result");
+      
+      console.log("E. 페이지 새로고침");
       window.location.reload();
     }
   };
