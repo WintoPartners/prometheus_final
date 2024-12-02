@@ -18,36 +18,6 @@ function Login() {
     console.log('Token:', token);
     console.log('Custom Param:', customParam);
 
-    /* 
-    from which page was redirected 
-    check if its ilovesales.site 
-    */
-    const referrer = document.referrer;
-    console.log('Referrer:', referrer);
-    if (referrer.includes('ilovesales.site')) {
-      console.log('This page was accessed via redirection from:', referrer);
-
-      if (customParam) {
-        checkValid(customParam).then(isValid => {
-          if (isValid) {
-            // new login method(ilovesales) successful, navigate to init page
-            window.location.href = `${process.env.REACT_APP_PAGE}/init`;
-          } else {
-            alert('프로메테우스 서비스는 유료 상품으로 제공되고 있습니다. 아이러브세일즈 페이지를 참고해주세요.');
-            // window.location.href = ilovesales_url;
-          }
-        });
-      } else {
-        alert('유효하지 않은 접근입니다.');
-        // window.location.href = ilovesales_url;
-      }
-    } else {
-      alert('잘못된 접근입니다. 아이러브세일즈를 통해 접근해주세요.');
-      //console.log('Referrer:', referrer);
-      //window.location.href = ilovesales_url;
-    }
-  }, [navigate]);
-
   const checkValid = async (uid) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/check-valid`, {
