@@ -34,16 +34,17 @@ function Login() {
             window.location.href = `${process.env.REACT_APP_PAGE}/init`;
           } else {
             alert('프로메테우스 서비스는 유료 상품으로 제공되고 있습니다. 아이러브세일즈 페이지를 참고해주세요.');
-            window.location.href = ilovesales_url;
+            // window.location.href = ilovesales_url;
           }
         });
       } else {
         alert('유효하지 않은 접근입니다.');
-        window.location.href = ilovesales_url;
+        // window.location.href = ilovesales_url;
       }
     } else {
       alert('잘못된 접근입니다. 아이러브세일즈를 통해 접근해주세요.');
-      window.location.href = ilovesales_url;
+      //console.log('Referrer:', referrer);
+      //window.location.href = ilovesales_url;
     }
   }, [navigate]);
 
@@ -80,8 +81,8 @@ function Login() {
         });
         const data = await response.json();
         if (response.ok) {
-            // navigate('/init');
-            window.location.href = `${process.env.REACT_APP_PAGE}/init`;
+            navigate('/init');
+            // window.location.href = `${process.env.REACT_APP_PAGE}/init`;
         } else {
             throw new Error(data.message);
         }

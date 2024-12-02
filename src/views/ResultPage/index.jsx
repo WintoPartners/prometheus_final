@@ -9,6 +9,7 @@ import { Document,AlignmentType, Packer, Paragraph} from 'docx';
 import { saveAs } from 'file-saver';
 
 async function fetchTasks() {
+  console.log("fetchTasks 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setProject`, {
     credentials: 'include',
     method: 'POST',
@@ -24,10 +25,11 @@ async function fetchTasks() {
 }
 
 async function setIA() {
+  console.log("setIA 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setIA`, {
     credentials: 'include',
     method: 'POST',
-  }); // API 엔드포인트는 예시입니다.
+  }); // API 엔드���인트는 예시입니다.
   // const response = await fetch('https://metheus.store/setIA', {
   //   credentials: 'include',
   //   method: 'POST',
@@ -37,7 +39,9 @@ async function setIA() {
   }
   return response.json();
 }
+
 async function fetchWBS() {
+  console.log("fetchWBS 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setWbs`, {
     credentials: 'include',
     method: 'POST',
@@ -52,7 +56,9 @@ async function fetchWBS() {
   }
   return response.json();
 }
+
 async function fetchFuncDesc() {
+  console.log("fetchFuncDesc 호출됨");
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setFuncDesc`, {
     credentials: 'include',
     method: 'POST',
@@ -86,9 +92,9 @@ const color = [
   { back: "#d1a3ff" }  // 라벤더
 ];
 function ResultPage() {
+  window.console.log('ResultPage 렌더링');
   
   const navigate = useNavigate();
-  const [funcDesc, setFuncDesc] = useState('');
   const [rfpData, setRfpData] = useState({
     pro_name: '',
     pro_budget: '',
@@ -101,7 +107,92 @@ function ResultPage() {
     pro_reference: ''
   });
   const [iaData, setIaData] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [funcDesc, setFuncDesc] = useState('');
+
+  // 초기 데이터 로딩 함수
+  const loadInitialData = async () => {
+    window.console.log('loadInitialData 시작');
+    try {
+      const retryResponse = await axios.post(
+        `${process.env.REACT_APP_API_ENDPOINT}/retry`, 
+        null, 
+        { withCredentials: true }
+      );
+      window.console.log('retry 응답:', retryResponse);
+      
+      // 각 API 호출 전에 URL 출력
+      window.console.log('API URL:', `${process.env.REACT_APP_API_ENDPOINT}/setProject`);
+      const projectInfo = await fetchTasks();
+      window.console.log('projectInfo:', projectInfo);
+      
+      console.log("6. setIA 시작");
+      const iaInfo = await setIA();
+      console.log("7. iaInfo 데이터:", iaInfo);
+
+      console.log("8. fetchWBS 시작");
+      const tasksFromServer = await fetchWBS();
+      console.log("9. WBS 데이터:", tasksFromServer);
+
+      console.log("10. fetchFuncDesc 시작");
+      const funcDescData = await fetchFuncDesc();
+      console.log("11. funcDesc 데이터:", funcDescData);
+
+      // 상태 업데이트
+      console.log("12. 상태 업데이트 시작");
+      setRfpData(projectInfo[0]);
+      setIaData(preprocessData(iaInfo));
+      setFuncDesc(funcDescData[0]);
+
+      const tasksWithColor = tasksFromServer.map((task, index) => ({
+        ...task,
+        color: color[index % color.length].back,
+      }));
+      setTasks(tasksWithColor);
+      console.log("13. 상태 업데이트 완료");
+
+    } catch (error) {
+      window.console.error('에러 발생:', error);
+      // 에러 객체 자세히 출력
+      window.console.dir(error);
+    }
+  };
+
+  useEffect(() => {
+    window.console.log('useEffect 실행');
+    loadInitialData();
+    return () => {
+      console.log("=== useEffect 클린업 ===");
+    };
+  }, []);
+
+  // retry 함수 수정
+  const retry = async () => {
+    console.log("A. retry 함수 시작");
+    const confirmRetry = window.confirm("같은 내용으로 재분석 하시겠습니까?");
+    
+    if(confirmRetry) {
+      try {
+        console.log("B. 로딩 페이지로 이동");
+        navigate("/loading");
+        
+        console.log("C. loadInitialData 호출");
+        await loadInitialData();
+        
+        console.log("D. 결과 페이지로 이동");
+        navigate("/result");
+        
+        console.log("E. 페이지 새로고침 전");
+        window.location.reload();
+      } catch (error) {
+        console.error("retry 실행 중 에러:", error);
+      }
+    }
+  };
+
+  // 데이터 전처리 함수
   function preprocessData(iaData) {
+    console.log("preprocessData 시작:", iaData);
     // 초기 상태값 설정
     let depth1Count = {}, depth2Count = {}, depth3Count = {};
   
@@ -155,85 +246,17 @@ function ResultPage() {
       }
     });
   
+    console.log("preprocessData 완료");
     return iaData;
   }
 
-  const retry = async () => {
-    const confirmRetry = window.confirm("같은 내용으로 재분석 하시겠습니까?");
+  console.log("현재 상태:", {
+    rfpData,
+    iaData,
+    tasks,
+    funcDesc
+  });
 
-    if(confirmRetry){
-      try {
-        // 선택된 agencyNumbers와 사용자 IP를 서버로 전송
-        navigate("/loading");
-        // await axios.post('https://metheus.store/retry',  null,{
-        //   withCredentials: true // 쿠키 포함 설정
-        // });
-        await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null,{
-          withCredentials: true // 쿠키 포함 설정
-        });
-      } catch (error) {
-        console.error('Error sending agency numbers:', error);
-      }
-      navigate("/result");
-      window.location.reload();
-    }else{
-      return;
-    }
-    };
-    const [tasks, setTasks] = useState([]);
-  useEffect(() => {
-    // RFP 데이터를 가져오는 비동기 함수
-    const fetchRfpData = async () => {
-      try {
-        const projectInfo = await fetchTasks();
-        setRfpData(projectInfo[0]);
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-      } 
-      // 가져온 데이터로 상태 업데이트
-    };
-    const fetchIaData = async () => {
-      try {
-        const iaInfo = await setIA();
-        setIaData(preprocessData(iaInfo)); // 가져온 데이터로 상태 업데이트
-      } catch (error) {
-        console.error('Failed to fetch IA data:', error);
-      }
-    };
-    const getTasks = async () => {
-      try {
-        // WBS 데이터를 서버에서 불러옵니다.
-        const tasksFromServer = await fetchWBS();
-        // 불러온 데이터에 색상을 할당합니다.
-        const tasksWithColor = tasksFromServer.map((task, index) => ({
-          ...task,
-          // 색상 배열에서 순환적으로 색상을 선택합니다.
-          color: color[index % color.length].back,
-        }));
-        setTasks(tasksWithColor);
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-      }
-    };
-
-    const fetchFuncDescData = async () => {
-      try {
-        const funcDescData = await fetchFuncDesc();
-        setFuncDesc(funcDescData[0]);
-
-      } catch (error) {
-        console.error('Failed to fetch funcDesc:', error);
-      }
-    };
-
-    
-    fetchRfpData();
-    fetchIaData();
-    getTasks();
-    fetchFuncDescData();
-  }, []);
-  
-    
   const savePDF = () => {
     const input = document.getElementById("result-wrap");
     if (!input) {
@@ -241,6 +264,8 @@ function ResultPage() {
       return;
     }
     
+    console.log("PDF 저장을 위한 요소가 확인되었습니다:", input);
+
     const headings = input.querySelectorAll(".result-heading");
     headings.forEach(heading => {
       heading.style.borderRadius = "0";
@@ -482,6 +507,12 @@ function ResultPage() {
       });
     };
 
+  // 현재 환경변수 확인
+  window.console.log('현재 환경변수:', {
+    NODE_ENV: process.env.NODE_ENV,
+    API_ENDPOINT: process.env.REACT_APP_API_ENDPOINT
+  });
+
   return (
     <div className="contents">
       <div>
@@ -538,7 +569,7 @@ function ResultPage() {
               {/* <div className="middle-card">
                 <div className="middle-card__heading">
                   <img className="img" src={ICON.PENCIL} alt="icon" />
-                  <p>서비스 스펙 / 환경 / 방식</p>
+                  <p>서비스 스펙 / 경 / 방식</p>
                 </div>
 
                 <div className="middle-card__contents">
