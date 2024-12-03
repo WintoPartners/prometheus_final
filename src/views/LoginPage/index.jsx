@@ -21,7 +21,7 @@ function Login() {
 
   const checkValid = async (uid) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/check-valid`, {
+      const response = await fetch(`https://api.metheus.pro/check-valid`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ function Login() {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
+        const response = await fetch(`https://api.metheus.pro/login`, {
             method: 'POST',
             credentials: 'include',  
             headers: {
@@ -53,7 +53,6 @@ function Login() {
         const data = await response.json();
         if (response.ok) {
             navigate('/init');
-            // window.location.href = `${process.env.REACT_APP_PAGE}/init`;
         } else {
             throw new Error(data.message);
         }
@@ -64,7 +63,7 @@ function Login() {
 
   const handleKakaoLogin = () => {
     Kakao.Auth.authorize({
-      redirectUri: `${process.env.REACT_APP_API_ENDPOINT}/auth/kakao/callback`,
+      redirectUri: `https://api.metheus.pro/auth/kakao/callback`,
     });
   };
 
