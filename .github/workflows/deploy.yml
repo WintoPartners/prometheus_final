@@ -21,11 +21,20 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Clean npm cache
-        run: npm cache clean --force
+      - name: Clean install and cache
+        run: |
+          rm -rf node_modules
+          rm -rf build
+          npm cache clean --force
         
       - name: Install dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Verify env variables
+        run: |
+          echo "Creating .env file with:"
+          echo "REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}"
+          echo "REACT_APP_PAGE=${{ secrets.REACT_APP_PAGE }}"
 
       - name: Create .env file
         run: |
@@ -33,11 +42,24 @@ jobs:
           echo "REACT_APP_PAGE=${{ secrets.REACT_APP_PAGE }}" >> .env
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "Building with env variables:"
+          env | grep REACT_APP
+          npm run build
         env:
           CI: false
           REACT_APP_API_ENDPOINT: ${{ secrets.REACT_APP_API_ENDPOINT }}
           REACT_APP_PAGE: ${{ secrets.REACT_APP_PAGE }}
+
+      - name: Clean server directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCP_SERVER_IP }}
+          username: ${{ secrets.NCP_SERVER_USER }}
+          password: ${{ secrets.NCP_SERVER_PASSWORD }}
+          port: 2222
+          script: |
+            rm -rf /var/www/html/*
 
       - name: Deploy to Server
         uses: appleboy/scp-action@master
