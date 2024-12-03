@@ -26,23 +26,41 @@ jobs:
           rm -rf node_modules
           rm -rf build
           npm cache clean --force
+          echo "Clean completed"
         
       - name: Install dependencies
         run: npm ci
 
-      - name: Create .env file with hardcoded values
+      - name: Create and verify .env file
         run: |
           echo "REACT_APP_API_ENDPOINT=https://api.metheus.pro" > .env
           echo "REACT_APP_PAGE=https://app.metheus.pro" >> .env
-          cat .env  # 설정된 환경 변수 확인
+          echo "=== .env file contents ==="
+          cat .env
+          echo "======================="
 
-      - name: Build with explicit env variables
+      - name: Build with logging
         run: |
+          echo "Starting build with environment variables:"
+          echo "REACT_APP_API_ENDPOINT: $REACT_APP_API_ENDPOINT"
+          echo "REACT_APP_PAGE: $REACT_APP_PAGE"
           REACT_APP_API_ENDPOINT=https://api.metheus.pro REACT_APP_PAGE=https://app.metheus.pro npm run build
+          echo "Build completed"
+          echo "=== Checking built files for API endpoint ==="
+          find build -type f -name "*.js" -exec grep -l "api" {} \;
+          echo "=== Content of main.js (if exists) ==="
+          cat build/static/js/main.*.js | grep -A 5 -B 5 "api"
         env:
           CI: false
           REACT_APP_API_ENDPOINT: "https://api.metheus.pro"
           REACT_APP_PAGE: "https://app.metheus.pro"
+
+      - name: Verify build directory
+        run: |
+          echo "=== Build directory contents ==="
+          ls -la build/
+          echo "=== Static JS files ==="
+          ls -la build/static/js/
 
       - name: Clean server directory
         uses: appleboy/ssh-action@master
@@ -52,7 +70,10 @@ jobs:
           password: ${{ secrets.NCP_SERVER_PASSWORD }}
           port: 2222
           script: |
+            echo "=== Cleaning server directory ==="
             rm -rf /var/www/html/*
+            echo "=== Server directory after cleaning ==="
+            ls -la /var/www/html/
 
       - name: Deploy to Server
         uses: appleboy/scp-action@master
@@ -64,3 +85,19 @@ jobs:
           source: "build/*"
           target: "/var/www/html"
           strip_components: 1
+
+      - name: Verify deployment and restart services
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.NCP_SERVER_IP }}
+          username: ${{ secrets.NCP_SERVER_USER }}
+          password: ${{ secrets.NCP_SERVER_PASSWORD }}
+          port: 2222
+          script: |
+            echo "=== Deployed files in /var/www/html ==="
+            ls -la /var/www/html/
+            echo "=== Checking for API endpoint in deployed files ==="
+            find /var/www/html -type f -name "*.js" -exec grep -l "api" {} \;
+            echo "=== Restarting services ==="
+            sudo systemctl restart nginx
+            pm2 restart all
