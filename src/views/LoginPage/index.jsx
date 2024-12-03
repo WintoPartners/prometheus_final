@@ -60,7 +60,7 @@ function Login() {
         alert('로그인 실패: ' + error.message);
     }
   };
-
+// 카카오 로그인
   const handleKakaoLogin = () => {
     Kakao.Auth.authorize({
       redirectUri: `https://api.metheus.pro/auth/kakao/callback`,
