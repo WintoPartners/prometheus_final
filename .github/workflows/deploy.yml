@@ -1,15 +1,13 @@
-name: React Build and Deploy
+name: Server Initialize and Deploy
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  initialize-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,48 +19,7 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Clean install and cache
-        run: |
-          rm -rf node_modules
-          rm -rf build
-          npm cache clean --force
-          echo "Clean completed"
-        
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Create and verify .env file
-        run: |
-          echo "REACT_APP_API_ENDPOINT=https://api.metheus.pro" > .env
-          echo "REACT_APP_PAGE=https://app.metheus.pro" >> .env
-          echo "=== .env file contents ==="
-          cat .env
-          echo "======================="
-
-      - name: Build with logging
-        run: |
-          echo "Starting build with environment variables:"
-          echo "REACT_APP_API_ENDPOINT: $REACT_APP_API_ENDPOINT"
-          echo "REACT_APP_PAGE: $REACT_APP_PAGE"
-          REACT_APP_API_ENDPOINT=https://api.metheus.pro REACT_APP_PAGE=https://app.metheus.pro npm run build
-          echo "Build completed"
-          echo "=== Checking built files for API endpoint ==="
-          find build -type f -name "*.js" -exec grep -l "api" {} \;
-          echo "=== Content of main.js (if exists) ==="
-          cat build/static/js/main.*.js | grep -A 5 -B 5 "api"
-        env:
-          CI: false
-          REACT_APP_API_ENDPOINT: "https://api.metheus.pro"
-          REACT_APP_PAGE: "https://app.metheus.pro"
-
-      - name: Verify build directory
-        run: |
-          echo "=== Build directory contents ==="
-          ls -la build/
-          echo "=== Static JS files ==="
-          ls -la build/static/js/
-
-      - name: Clean server directory
+      - name: Initialize Server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_SERVER_IP }}
@@ -70,10 +27,64 @@ jobs:
           password: ${{ secrets.NCP_SERVER_PASSWORD }}
           port: 2222
           script: |
-            echo "=== Cleaning server directory ==="
-            rm -rf /var/www/html/*
-            echo "=== Server directory after cleaning ==="
-            ls -la /var/www/html/
+            sudo systemctl stop nginx || true
+            sudo yum remove -y nginx || true
+            sudo rm -rf /etc/nginx
+            sudo rm -rf /var/www/html
+            pm2 kill || true
+            npm uninstall -g pm2 || true
+            rm -rf ~/prometheus_final*
+            
+            sudo yum install -y epel-release
+            sudo yum install -y nginx
+            sudo yum install -y certbot python3-certbot-nginx
+            
+            curl -sL https://rpm.nodesource.com/setup_16.x | sudo bash -
+            sudo yum install -y nodejs
+            
+            sudo npm install -g pm2
+            
+            sudo mkdir -p /var/www/html
+            sudo chown -R nginx:nginx /var/www/html
+            
+            echo 'server {
+                listen 80;
+                server_name app.metheus.pro;
+                
+                location / {
+                    root   /var/www/html;
+                    index  index.html index.htm;
+                    try_files $uri $uri/ /index.html;
+                    
+                    add_header Cache-Control "no-cache, no-store, must-revalidate";
+                    add_header Pragma "no-cache";
+                    add_header Expires 0;
+                }
+            }' | sudo tee /etc/nginx/conf.d/default.conf
+            
+            sudo certbot --nginx -d app.metheus.pro --non-interactive --agree-tos -m admin@metheus.pro
+            
+            sudo firewall-cmd --permanent --add-service=http || true
+            sudo firewall-cmd --permanent --add-service=https || true
+            sudo firewall-cmd --reload || true
+
+      - name: Clean and Install dependencies
+        run: |
+          rm -rf node_modules
+          rm -rf build
+          npm cache clean --force
+          npm ci
+
+      - name: Create .env file
+        run: |
+          echo "REACT_APP_API_ENDPOINT=https://api.metheus.pro" > .env
+          echo "REACT_APP_PAGE=https://app.metheus.pro" >> .env
+
+      - name: Build
+        run: |
+          REACT_APP_API_ENDPOINT=https://api.metheus.pro REACT_APP_PAGE=https://app.metheus.pro npm run build
+        env:
+          CI: false
 
       - name: Deploy to Server
         uses: appleboy/scp-action@master
@@ -86,7 +97,7 @@ jobs:
           target: "/var/www/html"
           strip_components: 1
 
-      - name: Verify deployment and restart services
+      - name: Final Setup
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_SERVER_IP }}
@@ -94,10 +105,9 @@ jobs:
           password: ${{ secrets.NCP_SERVER_PASSWORD }}
           port: 2222
           script: |
-            echo "=== Deployed files in /var/www/html ==="
-            ls -la /var/www/html/
-            echo "=== Checking for API endpoint in deployed files ==="
-            find /var/www/html -type f -name "*.js" -exec grep -l "api" {} \;
-            echo "=== Restarting services ==="
+            sudo chown -R nginx:nginx /var/www/html
             sudo systemctl restart nginx
-            pm2 restart all
+            sudo systemctl enable nginx
+            echo "=== Deployment Complete ==="
+            echo "=== Checking nginx status ==="
+            sudo systemctl status nginx
