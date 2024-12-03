@@ -17,6 +17,7 @@ function Login() {
     const customParam = params.get('customParam');
     console.log('Token:', token);
     console.log('Custom Param:', customParam);
+  }, []);
 
   const checkValid = async (uid) => {
     try {
@@ -114,6 +115,6 @@ function Login() {
       </form>
     </div>
   );
-}
+};
 
 export default Login;
