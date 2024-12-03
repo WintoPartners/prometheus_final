@@ -30,26 +30,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify env variables
+      - name: Create .env file with hardcoded values
         run: |
-          echo "Creating .env file with:"
-          echo "REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}"
-          echo "REACT_APP_PAGE=${{ secrets.REACT_APP_PAGE }}"
+          echo "REACT_APP_API_ENDPOINT=https://api.metheus.pro" > .env
+          echo "REACT_APP_PAGE=https://app.metheus.pro" >> .env
+          cat .env  # 설정된 환경 변수 확인
 
-      - name: Create .env file
+      - name: Build with explicit env variables
         run: |
-          echo "REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}" > .env
-          echo "REACT_APP_PAGE=${{ secrets.REACT_APP_PAGE }}" >> .env
-
-      - name: Build
-        run: |
-          echo "Building with env variables:"
-          env | grep REACT_APP
-          npm run build
+          REACT_APP_API_ENDPOINT=https://api.metheus.pro REACT_APP_PAGE=https://app.metheus.pro npm run build
         env:
           CI: false
-          REACT_APP_API_ENDPOINT: ${{ secrets.REACT_APP_API_ENDPOINT }}
-          REACT_APP_PAGE: ${{ secrets.REACT_APP_PAGE }}
+          REACT_APP_API_ENDPOINT: "https://api.metheus.pro"
+          REACT_APP_PAGE: "https://app.metheus.pro"
 
       - name: Clean server directory
         uses: appleboy/ssh-action@master
