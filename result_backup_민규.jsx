@@ -7,7 +7,6 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Document,AlignmentType, Packer, Paragraph} from 'docx';
 import { saveAs } from 'file-saver';
-import RetryModal from 'components/RetryModal';
 
 async function fetchTasks() {
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setProject`, {
@@ -102,9 +101,6 @@ function ResultPage() {
     pro_reference: ''
   });
   const [iaData, setIaData] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [showRetryModal, setShowRetryModal] = useState(false);
-
   function preprocessData(iaData) {
     // 초기 상태값 설정
     let depth1Count = {}, depth2Count = {}, depth3Count = {};
@@ -162,89 +158,75 @@ function ResultPage() {
     return iaData;
   }
 
-  const checkDataValidity = (data) => {
-    if (!data || 
-        (typeof data === 'object' && Object.keys(data).length === 0) || 
-        (Array.isArray(data) && data.length === 0)) {
-      return false;
-    }
-    return true;
-  };
-
   const retry = async () => {
-    try {
-      navigate("/loading");
-      await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null, {
-        withCredentials: true
-      });
+    const confirmRetry = window.confirm("같은 내용으로 재분석 하시겠습니까?");
+
+    if(confirmRetry){
+      try {
+        // 선택된 agencyNumbers와 사용자 IP를 서버로 전송
+        navigate("/loading");
+        // await axios.post('https://metheus.store/retry',  null,{
+        //   withCredentials: true // 쿠키 포함 설정
+        // });
+        await axios.post(`${process.env.REACT_APP_API_ENDPOINT}/retry`, null,{
+          withCredentials: true // 쿠키 포함 설정
+        });
+      } catch (error) {
+        console.error('Error sending agency numbers:', error);
+      }
       navigate("/result");
       window.location.reload();
-    } catch (error) {
-      console.error('Error sending agency numbers:', error);
+    }else{
+      return;
     }
-  };
-
+    };
+    const [tasks, setTasks] = useState([]);
   useEffect(() => {
+    // RFP 데이터를 가져오는 비동기 함수
     const fetchRfpData = async () => {
       try {
         const projectInfo = await fetchTasks();
-        if (!checkDataValidity(projectInfo)) {
-          setShowRetryModal(true);
-          return;
-        }
         setRfpData(projectInfo[0]);
       } catch (error) {
         console.error('Failed to fetch tasks:', error);
-        setShowRetryModal(true);
-      }
+      } 
+      // 가져온 데이터로 상태 업데이트
     };
-
     const fetchIaData = async () => {
       try {
         const iaInfo = await setIA();
-        if (!checkDataValidity(iaInfo)) {
-          setShowRetryModal(true);
-          return;
-        }
-        setIaData(preprocessData(iaInfo));
+        setIaData(preprocessData(iaInfo)); // 가져온 데이터로 상태 업데이트
       } catch (error) {
         console.error('Failed to fetch IA data:', error);
-        setShowRetryModal(true);
       }
     };
-
     const getTasks = async () => {
       try {
+        // WBS 데이터를 서버에서 불러옵니다.
         const tasksFromServer = await fetchWBS();
-        if (!checkDataValidity(tasksFromServer)) {
-          setShowRetryModal(true);
-          return;
-        }
+        // 불러온 데이터에 색상을 할당합니다.
         const tasksWithColor = tasksFromServer.map((task, index) => ({
           ...task,
+          // 색상 배열에서 순환적으로 색상을 선택합니다.
           color: color[index % color.length].back,
         }));
         setTasks(tasksWithColor);
       } catch (error) {
         console.error('Failed to fetch tasks:', error);
-        setShowRetryModal(true);
       }
     };
 
     const fetchFuncDescData = async () => {
       try {
         const funcDescData = await fetchFuncDesc();
-        if (!checkDataValidity(funcDescData)) {
-          setShowRetryModal(true);
-          return;
-        }
         setFuncDesc(funcDescData[0]);
+
       } catch (error) {
         console.error('Failed to fetch funcDesc:', error);
-        setShowRetryModal(true);
       }
     };
 
+    
     fetchRfpData();
     fetchIaData();
     getTasks();
@@ -502,10 +484,6 @@ function ResultPage() {
 
   return (
     <div className="contents">
-      <RetryModal 
-        isOpen={showRetryModal} 
-        onConfirm={retry}
-      />
       <div>
         <div className="result-wrap">
           <div id="result-wrap">

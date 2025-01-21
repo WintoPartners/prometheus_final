@@ -7,7 +7,6 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { Document,AlignmentType, Packer, Paragraph} from 'docx';
 import { saveAs } from 'file-saver';
-import RetryModal from 'components/RetryModal';
 
 async function fetchTasks() {
   const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setProject`, {
@@ -102,9 +101,6 @@ function ResultPage() {
     pro_reference: ''
   });
   const [iaData, setIaData] = useState([]);
-  const [tasks, setTasks] = useState([]);
-  const [showRetryModal, setShowRetryModal] = useState(false);
-
   function preprocessData(iaData) {
     // 초기 상태값 설정
     let depth1Count = {}, depth2Count = {}, depth3Count = {};
@@ -162,15 +158,6 @@ function ResultPage() {
     return iaData;
   }
 
-  const checkDataValidity = (data) => {
-    if (!data || 
-        (typeof data === 'object' && Object.keys(data).length === 0) || 
-        (Array.isArray(data) && data.length === 0)) {
-      return false;
-    }
-    return true;
-  };
-
   const retry = async () => {
     try {
       navigate("/loading");
@@ -184,71 +171,64 @@ function ResultPage() {
     }
   };
 
+  const [tasks, setTasks] = useState([]);
   useEffect(() => {
-    const fetchRfpData = async () => {
+    const checkDataValidity = (data) => {
+      if (!data || 
+          (typeof data === 'object' && Object.keys(data).length === 0) || 
+          (Array.isArray(data) && data.length === 0)) {
+        return false;
+      }
+      return true;
+    };
+
+    const fetchAllData = async () => {
       try {
         const projectInfo = await fetchTasks();
-        if (!checkDataValidity(projectInfo)) {
-          setShowRetryModal(true);
-          return;
-        }
-        setRfpData(projectInfo[0]);
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-        setShowRetryModal(true);
-      }
-    };
-
-    const fetchIaData = async () => {
-      try {
         const iaInfo = await setIA();
-        if (!checkDataValidity(iaInfo)) {
-          setShowRetryModal(true);
-          return;
-        }
-        setIaData(preprocessData(iaInfo));
-      } catch (error) {
-        console.error('Failed to fetch IA data:', error);
-        setShowRetryModal(true);
-      }
-    };
-
-    const getTasks = async () => {
-      try {
         const tasksFromServer = await fetchWBS();
-        if (!checkDataValidity(tasksFromServer)) {
-          setShowRetryModal(true);
+        const funcDescData = await fetchFuncDesc();
+
+        // 데이터 유효성 검사
+        if (!checkDataValidity(projectInfo) || 
+            !checkDataValidity(iaInfo) || 
+            !checkDataValidity(tasksFromServer) || 
+            !checkDataValidity(funcDescData)) {
+          const retryAnalysis = window.confirm(
+            "데이터를 불러오는데 문제가 발생했습니다.\n" +
+            "같은 내용으로 재분석을 진행하시겠습니까?"
+          );
+          
+          if (retryAnalysis) {
+            retry();
+          }
           return;
         }
+
+        // 데이터가 유효한 경우 상태 업데이트
+        setRfpData(projectInfo[0]);
+        setIaData(preprocessData(iaInfo));
         const tasksWithColor = tasksFromServer.map((task, index) => ({
           ...task,
           color: color[index % color.length].back,
         }));
         setTasks(tasksWithColor);
-      } catch (error) {
-        console.error('Failed to fetch tasks:', error);
-        setShowRetryModal(true);
-      }
-    };
-
-    const fetchFuncDescData = async () => {
-      try {
-        const funcDescData = await fetchFuncDesc();
-        if (!checkDataValidity(funcDescData)) {
-          setShowRetryModal(true);
-          return;
-        }
         setFuncDesc(funcDescData[0]);
+
       } catch (error) {
-        console.error('Failed to fetch funcDesc:', error);
-        setShowRetryModal(true);
+        console.error('Failed to fetch data:', error);
+        const retryAnalysis = window.confirm(
+          "데이터를 불러오는데 문제가 발생했습니다.\n" +
+          "같은 내용으로 재분석을 진행하시겠습니까?"
+        );
+        
+        if (retryAnalysis) {
+          retry();
+        }
       }
     };
 
-    fetchRfpData();
-    fetchIaData();
-    getTasks();
-    fetchFuncDescData();
+    fetchAllData();
   }, []);
   
     
@@ -502,10 +482,6 @@ function ResultPage() {
 
   return (
     <div className="contents">
-      <RetryModal 
-        isOpen={showRetryModal} 
-        onConfirm={retry}
-      />
       <div>
         <div className="result-wrap">
           <div id="result-wrap">
