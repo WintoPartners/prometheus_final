@@ -17,40 +17,11 @@ function Login() {
     const customParam = params.get('customParam');
     console.log('Token:', token);
     console.log('Custom Param:', customParam);
-
-    /* 
-    from which page was redirected 
-    check if its ilovesales.site 
-    */
-    const referrer = document.referrer;
-    console.log('Referrer:', referrer);
-    if (referrer.includes('ilovesales.site')) {
-      console.log('This page was accessed via redirection from:', referrer);
-
-      if (customParam) {
-        checkValid(customParam).then(isValid => {
-          if (isValid) {
-            // new login method(ilovesales) successful, navigate to init page
-            window.location.href = `${process.env.REACT_APP_PAGE}/init`;
-          } else {
-            alert('프로메테우스 서비스는 유료 상품으로 제공되고 있습니다. 아이러브세일즈 페이지를 참고해주세요.');
-            // window.location.href = ilovesales_url;
-          }
-        });
-      } else {
-        alert('유효하지 않은 접근입니다.');
-        // window.location.href = ilovesales_url;
-      }
-    } else {
-      alert('잘못된 접근입니다. 아이러브세일즈를 통해 접근해주세요.');
-      //console.log('Referrer:', referrer);
-      //window.location.href = ilovesales_url;
-    }
-  }, [navigate]);
+  }, []);
 
   const checkValid = async (uid) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/check-valid`, {
+      const response = await fetch(`https://api.metheus.pro/check-valid`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +31,7 @@ function Login() {
       const data = await response.json();
       return data.isValid;
     } catch (error) {
-      console.error('Error checking validity:', error);
+      console.error('Error checking validity :', error);
       return false;
     }
   };
@@ -68,7 +39,7 @@ function Login() {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-        const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/login`, {
+        const response = await fetch(`https://api.metheus.pro/login`, {
             method: 'POST',
             credentials: 'include',  
             headers: {
@@ -82,7 +53,6 @@ function Login() {
         const data = await response.json();
         if (response.ok) {
             navigate('/init');
-            // window.location.href = `${process.env.REACT_APP_PAGE}/init`;
         } else {
             throw new Error(data.message);
         }
@@ -90,10 +60,10 @@ function Login() {
         alert('로그인 실패: ' + error.message);
     }
   };
-
+// 카카오 로그인
   const handleKakaoLogin = () => {
     Kakao.Auth.authorize({
-      redirectUri: `${process.env.REACT_APP_API_ENDPOINT}/auth/kakao/callback`,
+      redirectUri: `https://api.metheus.pro/auth/kakao/callback`,
     });
   };
 
@@ -144,6 +114,6 @@ function Login() {
       </form>
     </div>
   );
-}
+};
 
 export default Login;
