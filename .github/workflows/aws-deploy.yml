@@ -3,10 +3,10 @@ name: React Build and Deploy to AWS
 on:
   push:
     branches:
-      - AWS-deploy
+      - new-aws-deploy
   pull_request:
     branches:
-      - AWS-deploy
+      - new-aws-deploy
 
 jobs:
   build-and-deploy:
