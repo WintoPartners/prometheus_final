@@ -15,7 +15,7 @@ const RetryModal = ({ isOpen, onConfirm }) => {
         
         <div className="modal-body">
           <div className="ai-icon">🤖</div>
-          <h2>잠시만 기다려주세요!</h2>
+          <h2>잠시만 기다려주세요</h2>
           <p>더 나은 결과를 위해 AI가<br />다시 한 번 분석하겠습니다.</p>
           <button className="confirm-button" onClick={onConfirm}>
             확인하기
