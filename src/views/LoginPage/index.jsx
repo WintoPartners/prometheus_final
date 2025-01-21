@@ -22,6 +22,13 @@ function Login() {
       }
     }, [navigate]);
     
+    useEffect(() => {
+      // 카카오 SDK 초기화
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init('e42a4789fd64d1bf0e771564a7dfe338');
+        //여기에 javascript 키를 넣기
+      }
+    }, []);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -61,17 +68,21 @@ function Login() {
 };
 
   const handleKakaoLogin = () => {
-    Kakao.Auth.authorize({
-      redirectUri: `${process.env.REACT_APP_API_ENDPOINT}/auth/kakao/callback`,
+    window.Kakao.Auth.authorize({
+      redirectUri: `${process.env.REACT_APP_PAGE}/oauth/callback/kakao`,
     });
   };
   
   const handleNaverLogin = () => {
-    const clientId = 'UgWovRvNUhyUrNmJ5MtR';  // 네이버에서 발급받은 Client ID
-    const redirectUri = encodeURIComponent('http://localhost:3000/naver-callback'); // 네이버 개발자 센터에 등록된 리다이렉트 URI
-    const state = encodeURIComponent(Math.random().toString(36).substr(2, 11)); // CSRF 공격 방지를 위한 상태 값
-    const loginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
-    window.location.href = loginUrl; // 네이버 로그인 페이지로 리다이렉트
+    const clientId = process.env.REACT_APP_NAVER_CLIENT_ID;
+    const redirectUri = encodeURIComponent(`${process.env.REACT_APP_PAGE}/naver-callback`);
+    const state = encodeURIComponent(Math.random().toString(36).substr(2, 11));
+    
+    // state 값 저장 (보안을 위해)
+    sessionStorage.setItem('naverState', state);
+    
+    const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
+    window.location.href = naverLoginUrl;
   };
   
   return (

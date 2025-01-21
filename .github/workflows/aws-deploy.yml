@@ -32,6 +32,8 @@ jobs:
         run: |
           echo "REACT_APP_API_ENDPOINT=${{ secrets.REACT_APP_API_ENDPOINT }}" > .env
           echo "REACT_APP_PAGE=${{ secrets.REACT_APP_PAGE }}" >> .env
+          echo "REACT_APP_NAVER_CLIENT_ID=${{ secrets.REACT_APP_NAVER_CLIENT_ID }}" >> .env
+          echo "REACT_APP_NAVER_CLIENT_SECRET=${{ secrets.REACT_APP_NAVER_CLIENT_SECRET }}" >> .env
 
       - name: Build
         run: npm run build
