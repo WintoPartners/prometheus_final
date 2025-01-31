@@ -72,11 +72,11 @@ function Login() {
 
   const handleKakaoLogin = () => {
     const clientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
-    const redirectUri = process.env.NODE_ENV === 'development' 
+    const redirectUri = process.env.REACT_APP_STAGE === 'development'
       ? 'http://localhost:3000/oauth'
-      : `${process.env.REACT_APP_PAGE}/oauth`;
-    
-    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&through_account=true&additional_auth_login=true`;
+      : 'https://app.metheus.pro/oauth';  // 프로덕션 환경의 실제 도메인
+
+    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
     
     console.log('Kakao Login URL:', kakaoLoginUrl); // 디버깅용
     window.location.href = kakaoLoginUrl;
