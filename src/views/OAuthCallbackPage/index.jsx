@@ -1,20 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../ProtectedPage/AuthContext';
 
 function OAuthCallback() {
     const navigate = useNavigate();
+    const auth = useAuth();
+    const requestSent = useRef(false);
 
     useEffect(() => {
-        // URL에서 인증 코드(code) 추출
-        const urlParams = new URLSearchParams(window.location.search);
-        const code = urlParams.get('code');
-        if (!code) {
-            console.error('인증 코드가 URL에 없습니다.');
-            window.location.href=`${process.env.REACT_APP_PAGE}/`;
+        console.log('KakaoCallback 컴포넌트 마운트됨');
+        console.log('Auth context:', auth);
+
+        if (requestSent.current) {
+            console.log('이미 요청이 진행 중입니다.');
             return;
         }
 
-        // 인증 코드를 서버로 전송하여 처리
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+        
+        console.log('Kakao Callback - Code:', code);
+
+        if (!code) {
+            console.error('인증 코드가 URL에 없습니다.');
+            navigate('/');
+            return;
+        }
+
+        requestSent.current = true;
+
         fetch(`${process.env.REACT_APP_API_ENDPOINT}/kakao/login`, {
             method: 'POST',
             headers: {
@@ -23,25 +37,62 @@ function OAuthCallback() {
             credentials: 'include',
             body: JSON.stringify({ code })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
+            console.log('Login Response:', data);
+            
             if (data.success) {
-                console.log('로그인 성공:', data);
-                window.localStorage.setItem('kakao_token', data.access_token);
-                window.location.href=`${process.env.REACT_APP_PAGE}/init`;
+                console.log('카카오 로그인 성공');
+                if (auth && typeof auth.login === 'function') {
+                    auth.login();
+                    console.log('로그인 상태 업데이트 완료');
+                    navigate('/init');
+                } else {
+                    console.error('login 함수를 찾을 수 없습니다');
+                    navigate('/');
+                }
             } else {
                 console.error('로그인 실패:', data.message);
-                window.location.href=`${process.env.REACT_APP_PAGE}/`;
+                navigate('/');
             }
         })
         .catch(error => {
-            console.error('서버와의 통신 오류:', error);
-            window.location.href=`${process.env.REACT_APP_PAGE}/`;
+            console.error('로그인 에러:', error);
+            navigate('/');
+        })
+        .finally(() => {
+            requestSent.current = false;
         });
-    }, [navigate]);
+    }, [navigate, auth]);
 
     return (
-        <div>Loading...</div>
+        <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '100vh',
+            backgroundColor: '#f5f5f5'
+        }}>
+            <div style={{
+                padding: '40px',
+                backgroundColor: 'white',
+                borderRadius: '8px',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                textAlign: 'center',
+                minWidth: '300px'
+            }}>
+                <h2 style={{ marginBottom: '20px' }}>카카오 로그인 처리중...</h2>
+                <p style={{ color: '#666' }}>잠시만 기다려주세요.</p>
+                <p style={{ fontSize: '14px', color: '#888', marginTop: '20px' }}>
+                    자동으로 페이지가 이동됩니다.
+                </p>
+            </div>
+        </div>
     );
 }
 

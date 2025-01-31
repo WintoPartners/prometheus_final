@@ -10,6 +10,14 @@ const App = () => {
     <AuthProvider>
       <Router>
         <Routes>
+          {/* 레이아웃이 필요없는 페이지들 */}
+          <Route path="/naver-callback" element={<Pages.NaverCallbackPage />} />
+          <Route path="/" element={<Pages.LoginPage />} />
+          <Route path="/oauth" element={<Pages.OAuthCallbackPage />} />
+          <Route path="/signup" element={<Pages.SignupPage />} />
+          <Route path="/findId" element={<Pages.FindIdPage />} />
+          <Route path="/findPassword" element={<Pages.FindPasswordPage />} />
+
           {/* Stepper Page Layout */}
           <Route element={<StepperLayout />}>
             <Route path="/loading" element={<ProtectedRoute><Pages.LoadingPage /></ProtectedRoute>} />
@@ -23,12 +31,6 @@ const App = () => {
             <Route path="/success" element={<ProtectedRoute><Pages.SuccessPage /></ProtectedRoute>} />
             <Route path="/fail" element={<ProtectedRoute><Pages.FailPage /></ProtectedRoute>} />
             <Route path="/status" element={<ProtectedRoute><Pages.StatusPage /></ProtectedRoute>} />
-            <Route path="/" element={<Pages.LoginPage />} />
-            <Route path="/oauth" element={<Pages.OAuthCallbackPage />} />
-            <Route path="/noauth" element={<Pages.NaverCallbackPage />} />
-            <Route path="/signup" element={<Pages.SignupPage />} />
-            <Route path="/findId" element={<Pages.FindIdPage />} />
-            <Route path="/findPassword" element={<Pages.FindPasswordPage />} />
           </Route>
         </Routes>
       </Router>

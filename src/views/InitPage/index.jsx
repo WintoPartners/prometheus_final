@@ -9,7 +9,7 @@ function InitPage() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [currentStep, setCurrentStep] = useState(0); // 현재 슬라이드 인덱스 관리
-
+  console.log('STAGE:', process.env.REACT_APP_STAGE);
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentStep(prevStep => (prevStep + 1) % steps.length);
@@ -69,9 +69,9 @@ function InitPage() {
       });
       if (response.ok) {
         const data = await response.json();
-        if (data.additionalInfo.subscriptionStatus === 'N') {
+        if (data.additionalInfo.subscriptionStatus === 'N') 
           navigate('/subscription');
-        } else {
+         else {
           navigate('/step/1', {
             state: {
               step: 1,
@@ -99,11 +99,10 @@ function InitPage() {
         });
         if (response.ok) {
           const data = await response.json();
-          if (data.additionalInfo.subscriptionStatus === 'N') {
-            navigate('/subscription');
-          } else {
+          if (data.additionalInfo.subscriptionStatus === 'N') 
+            navigate("/subscription");
+          else 
             navigate("/step/1");
-          }
         }
       } catch (error) {
         console.error('Error:', error);

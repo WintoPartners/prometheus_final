@@ -57,8 +57,11 @@ function Login() {
         // });
         const data = await response.json();
         if (response.ok) {
-            // navigate('/init');
-            window.location.href = `${process.env.REACT_APP_PAGE}/init`;
+            if (process.env.NODE_ENV === 'development') {
+                window.location.href = 'http://localhost:3000/init';
+            } else {
+                window.location.href = `${process.env.REACT_APP_PAGE}/init`;
+            }
         } else {
             throw new Error(data.message);
         }
@@ -68,17 +71,26 @@ function Login() {
 };
 
   const handleKakaoLogin = () => {
-    window.Kakao.Auth.authorize({
-      redirectUri: `${process.env.REACT_APP_PAGE}/oauth/callback/kakao`,
-    });
+    const clientId = process.env.REACT_APP_KAKAO_CLIENT_ID;
+    const redirectUri = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3000/oauth'
+      : `${process.env.REACT_APP_PAGE}/oauth`;
+    
+    const kakaoLoginUrl = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&through_account=true&additional_auth_login=true`;
+    
+    console.log('Kakao Login URL:', kakaoLoginUrl); // 디버깅용
+    window.location.href = kakaoLoginUrl;
   };
   
   const handleNaverLogin = () => {
     const clientId = process.env.REACT_APP_NAVER_CLIENT_ID;
-    const redirectUri = encodeURIComponent(`${process.env.REACT_APP_PAGE}/naver-callback`);
-    const state = encodeURIComponent(Math.random().toString(36).substr(2, 11));
+    // 개발 환경과 프로덕션 환경의 URL을 구분
+    const redirectUri = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3000/naver-callback'
+      : `${process.env.REACT_APP_PAGE}/naver-callback`;
+    const state = Math.random().toString(36).substr(2, 11);
     
-    // state 값 저장 (보안을 위해)
+    // state 값 저장
     sessionStorage.setItem('naverState', state);
     
     const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
