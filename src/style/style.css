@@ -219,19 +219,19 @@
 @media(max-width:768px) {
   .analyze-btn{
     width: 100%;
-  background-color: #3a84e3;
-  color: var(--white);
-  border-radius: 10px;
-  padding: 1.5rem 2rem;
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  text-align: left;
-  flex-direction:column;
-  border: 2px solid #3a84e3;
-  gap:1rem
+    background-color: #3a84e3;
+    color: var(--white);
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+    flex-direction:column;
+    border: 2px solid #3a84e3;
+    gap:1rem
   }
 
   .docx-btn {
@@ -373,10 +373,6 @@
 
 .checkbox-label {display: flex; flex-direction: column;width:100%; height: 100%; background-color: #373737; border-radius: 10px; border:2px solid #595959; padding:12px 14px 23px 14px; align-items: center; justify-content: flex-end; gap:10px; position: relative; transition: 0.3s;}
 .checkbox-label.checked {background-color: #E4EAFF; border:2px solid #4B85F6; box-shadow:  0px 0px 2px 2px #4B85F6 inset;}
-
-.checkbox-label.checked .info-desc,
-.checkbox-label.checked .work-type-heading h4,
-.checkbox-label.checked .work-type-heading p{color:#111111;}
 
 .checkbox-label input {display: none;}
 .custom-check {position: absolute; right:0; top:0; transform: translate(-10px, 10px); visibility: hidden;}
@@ -676,10 +672,10 @@
 
 .login-form {
   display: flex;
-  flex-direction: row; /* 항목을 수평 방향으로 배치 */
-  align-items: stretch; /* 내부 항목의 높이를 맞춤 */
+  flex-direction: row;
+  align-items: stretch;
   width: 100%;
-  max-width: 960px; /* 최대 너비를 조정하여 더 큰 화면에서 볼 때 적절히 보이도록 함 */
+  max-width: 960px;
   margin: auto;
   margin-top: 50px;
   border: 1px solid #ccc;
@@ -687,83 +683,123 @@
   padding: 20px;
   background-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Pretendard', sans-serif;
 }
 
 .login-image-part {
-  flex: 1; /* 이미지 파트는 폼의 반을 차지 */
-  background-size: cover; /* 이미지가 div 크기에 맞춰지도록 */
+  flex: 1;
+  background-size: cover;
 }
 
 .login-input-part {
-  flex: 1; /* 입력 파트도 폼의 반을 차지 */
+  flex: 1;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin-top:30px;
+  justify-content: center;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.signup-form h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+  color: white;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.find-id-form-container .signup-form h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  margin-top: 10px;
+  color: white;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
 }
 
 .login-form h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color:white
+  margin-bottom: 30px;
+  color: white;
+  font-family: 'Pretendard', sans-serif;
 }
 
 /* 모바일 대응 */
 @media (max-width: 768px) {
   .login-form {
-      flex-direction: column; /* 수직 방향으로 배치 */
-      align-items: center; /* 가운데 정렬 */
+      flex-direction: column;
+      align-items: center;
   }
 
   .login-image-part, .login-input-part {
-      flex: none; /* flex 속성 해제 */
-      width: 100%; /* 너비를 100%로 설정 */
-      margin-bottom: 20px; /* 각 섹션 간의 여백 추가 */
+      flex: none;
+      width: 100%;
+      margin-bottom: 20px;
   }
 
   .login-input-part {
-      padding: 0 20px; /* 좌우 여백 추가 */
+      padding: 0 20px;
   }
 }
 
 .input-group {
-  display: flex;
-  flex-direction: column; /* 요소들을 세로로 배치 */
-  align-items: flex-start; /* 라벨과 입력 필드의 정렬을 왼쪽으로 */
   margin-bottom: 20px;
-  width: 63%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .input-group label {
-  margin-bottom: 5px; /* 라벨과 입력 필드 사이의 간격 조정 */
-  color: #fff; /* 라벨의 텍스트 색상 */
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #fff;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .input-group input {
-  width: 100%; /* 입력 필드의 너비를 전체로 설정 */
+  width: 100%;
   padding: 12px;
-  border: 1px solid #b1b1b1;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
   color: #fff;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  font-family: 'Pretendard', sans-serif;
   box-sizing: border-box;
-  margin-top: 0; /* 상단 마진 제거 */
+  line-height: 1.2;
+  height: 45px;
+  margin: 0;
+}
+
+.input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-family: 'Pretendard', sans-serif;
 }
 
 .login-button {
-  width: 63%;
-  padding: 10px;
-  background-color: #2962ff; /* 누리끼리 색상 */
-  color: #fff;
+  width: 100%;
+  padding: 12px;
+  background-color: #4B85F6;
+  color: white;
   border: none;
-  border-radius: 20px; /* 둥근 모서리 */
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 16px;
   transition: background-color 0.3s;
-  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: 'Pretendard', sans-serif;
+  height: 45px;
 }
 
 .login-button:hover {
-  background-color: #628cff; /* 마우스 오버 시 색상 변화 */
+  background-color: #3a6fd6;
 }
 
 @media (max-width: 768px) {
@@ -778,123 +814,377 @@
 .link-buttons {
   display: flex;
   justify-content: center;
-  margin-top: 20px; /* 위쪽 여백 추가 */
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  font-family: 'Pretendard', sans-serif;
 }
 
 .link-button {
   background: none;
   border: none;
-  color: #b1b1b1; /* 글씨 색상 */
+  color: #4B85F6;
   cursor: pointer;
-  font-size: 16px; /* 글씨 크기 */
-  text-decoration: none; /* 밑줄 없애기 */
-  padding: 0 10px; /* 좌우 패딩 조정 */
+  font-size: 16px;
+  text-decoration: none;
+  padding: 0 10px;
+  position: relative;
+  transition: color 0.3s;
+  font-weight: 500;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.link-button::after {
+  content: '';
+  position: absolute;
+  margin-top: 10px;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: #4B85F6;
+  transition: width 0.3s ease;
+}
+
+.link-button:hover {
+  color: #6A9CFF;
+}
+
+.link-button:hover::after {
+  width: 100%;
 }
 
 @media (max-width: 768px) {
   .link-button {
-    font-size: 12px; /* 모바일에서 글씨 크기 */
+    font-size: 12px;
+    padding: 0 5px;
+    white-space: nowrap;
+  }
+  
+  .link-buttons {
+    gap: 5px;
+  }
+  
+  .divider {
+    margin: 0 2px;
   }
 }
 
 .divider {
-  color: #666; /* 구분선 색상 */
-  padding: 0 5px; /* 구분선 좌우 패딩 */
-  font-size :25px;
+  color: #4B85F6;
+  font-weight: 300;
+  font-family: 'Pretendard', sans-serif;
 }
-  .social-login {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-  }
 
-  .social-button {
-    flex: none; /* 버튼이 차지하는 공간을 자동으로 조절하지 않도록 설정 */
-    padding: 10px;
-    margin: 20px;
-    border-radius: 4px; /* 둥근 모서리 */
-    cursor: pointer;
-    display: flex;
+.social-login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  margin-top: 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.auth-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.auth-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.auth-button-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.auth-button-text {
+  color: #333;
+  font-size: 14px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.email-login {
+  background: transparent;
+  border: 1px solid #e0e0e0;
+}
+
+.email-login:hover {
+  background: #f8f8f8;
+}
+
+.kakao-login {
+  background: #FEE500;
+}
+
+.kakao-login:hover {
+  background: #FFE812;
+}
+
+.naver-login {
+  background: #03C75A;
+}
+
+.naver-login .auth-button-text {
+  color: white;
+}
+
+.naver-login:hover {
+  background: #02b150;
+}
+
+.separator-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  width: 100%;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.separator {
+  color: #888;
+  font-size: 14px;
+  position: relative;
+  padding: 0 15px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 100px;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.separator::before {
+  right: 100%;
+}
+
+.separator::after {
+  left: 100%;
+}
+
+@media (max-width: 768px) {
+  .social-login-container {
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s;
-    background-color: transparent; /* 배경색을 투명하게 설정 */
-    border: none;
   }
   
-  .social-button img {
-    width: 40px; /* 이미지 크기 조절 */
-    margin-bottom: 5px; /* 이미지와 텍스트 사이의 간격 */
-  }
-  
-  .social-button span {
-    display: block; /* 텍스트 항상 보이게 설정 */
-    color: #b1b1b1; /* 텍스트 색상 설정 */
-    font-size: 14px; /* 텍스트 크기 설정 */
-  }
-  
-  .kakao-login {
-    background-color: #1a1a1a /* 카카오 로그인 버튼 배경색 */
-  }
-  
-  .naver-login {
-    background-color: #1a1a1a; /* 네이버 로그인 버튼 배경색 */
-  }
-  
-
-
-  .signup-form-container {
+  .auth-button {
     width: 100%;
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 280px;
+  }
 }
 
-.signup-form h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    color:white;
+.auth-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.auth-subtitle {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.signup-header {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.signup-logo {
+  width: 120px;
+  margin-bottom: 15px;
+}
+
+.signup-description {
+  font-size: 16px;
+  color: #fff;
+  font-weight: 400;
+  line-height: 1.5;
+  font-family: 'Pretendard', sans-serif;
+  margin-bottom: 20px;
+}
+
+.signup-description strong {
+  color: #4B85F6;
+  font-weight: 700;
+}
+
+.signup-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.signup-form-container {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  padding: 30px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-family: 'Pretendard', sans-serif;
+  position: relative;
+}
+
+.signup-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.signup-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 기본 스타일 */
 .input-group2 {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: 'Pretendard', sans-serif;
+  position: relative;
 }
 
-.error-message {
-  color: #ca7676;
-  margin-top: 10px;
-}
 .input-group2 input {
-    width: 100%; /* 버튼 너비를 제외한 나머지 너비 */
-    padding: 12px;
-    border: 1px solid #b1b1b1;
-    border-radius: 4px;
-    background-color: transparent;
-    color: #fff;
-    box-sizing: border-box;
-    margin-top: 10px;
+  width: 100%;
+  padding: 12px 110px 12px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: border-color 0.3s;
+  font-family: 'Pretendard', sans-serif;
+  height: 45px;
+  box-sizing: border-box;
+  line-height: 1.2;
 }
 
 .check-button {
-    width: 100px; /* 버튼 너비 */
-    height: 38px;
-    margin-left: 10px;
-    padding: 0 10px;
-    background-color: #5b5b5b;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-top:10px;
-    cursor: pointer;
-    font-weight: bold;
+  position: absolute;
+  right: 5px;
+  top: 3px;
+  transform: translateY(0);
+  padding: 8px 12px;
+  background-color: #5b5b5b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+  font-family: 'Pretendard', sans-serif;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.error-message {
+  color: #ffffff;
+  margin-bottom: 0;
+  background-color: rgba(220, 53, 69, 0.9);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  animation: fadeInDown 0.4s ease-in-out;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Pretendard', sans-serif;
+  margin-top: 8px;
+  box-sizing: border-box;
+}
+
+.error-message::before {
+  content: "⚠️";
+  margin-right: 8px;
+  font-size: 14px;
+}
+
+.error-message::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, #ffffff, transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .input-group2 input:focus {
@@ -903,16 +1193,16 @@
 
 .signup-button {
     width: 100%;
-    height: 50px;
-    padding: 10px;
-    background-color: #2962ff;
+    padding: 12px;
+    background-color: #4B85F6;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 15px;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+    font-family: 'Pretendard', sans-serif;
 }
 
 .separator-container {
@@ -923,13 +1213,13 @@
   margin-top: 30px;
 }
 
-.separator-container::before,
+/* .separator-container::before,
 .separator-container::after {
   content: '';
   flex: 1;
   border-bottom: 1px solid #fff;
   margin: 0 10px;
-}
+} */
 
 .separator {
   white-space: nowrap;
@@ -939,37 +1229,75 @@
 /* 모바일 대응 */
 @media (max-width: 768px) {
     .check-button {
-        margin-left: 10px;
+        position: absolute;
+        right: 5px;
+        top: 3px;
+        transform: translateY(0);
+        width: 80px;
+        height: 39px;
+        padding: 8px 10px;
+        font-size: 12px;
     }
-    .input-group2 {
-      width:100%
-  }
+    
+    .input-group2 input {
+        padding-right: 100px;
+    }
 }
 
+
+.find-id-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Pretendard', sans-serif;
+}
 
 .find-id-form-container {
   width: 100%;
   max-width: 400px;
   margin: auto;
-  padding: 20px;
-  border: 1px solid #ccc;
+  padding: 30px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-family: 'Pretendard', sans-serif;
+  position: relative;
+}
+
+.find-id-form-container .signup-form {
+  padding: 0;
+}
+
+.find-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.find-close-button:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
-.button-group {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.link-container {
-  display: flex;
-  justify-content: space-between;
-}
-
 
 .function-list p {
   padding: 3px 0;
@@ -1226,4 +1554,94 @@
 .step-item_init_left h2 {
   color: white;
   margin-bottom:10px;
+}
+
+.login-link-container {
+  text-align: center;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  color: #fff;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.login-link {
+  display: inline-block;
+  color: #4B85F6;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  transition: all 0.3s ease;
+  padding: 0 5px;
+}
+
+.login-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: #4B85F6;
+  transition: width 0.3s ease;
+}
+
+.login-link:hover {
+  color: #6A9CFF;
+}
+
+.login-link:hover::after {
+  width: 100%;
+}
+
+.link-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.input-group2.has-error input {
+  border-color: rgba(220, 53, 69, 0.9);
+  box-shadow: 0 0 0 1px rgba(220, 53, 69, 0.5);
+}
+
+.check-button:hover {
+  background-color: #4B85F6;
+}
+
+@media (max-width: 768px) {
+  .check-button {
+    position: absolute;
+    right: 5px;
+    top: 3px;
+    transform: translateY(0);
+    width: 80px;
+    height: 39px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
+  .input-group2 input {
+    padding-right: 100px;
+  }
+}
+
+#phoneNumber {
+  margin-bottom: 8px;
+}
+
+#username {
+  margin-bottom: 8px;
+}
+
+.button-error-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.button-error-container .error-message {
+  margin-top: 0;
+  margin-bottom: 8px;
 }

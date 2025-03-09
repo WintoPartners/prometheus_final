@@ -121,15 +121,22 @@ function Login() {
                 <span className="divider">|</span>
                 <button className="link-button" onClick={() => navigate('/signup')}>회원가입</button>
               </div>
-              <div className="social-login">
-              <button className="social-button kakao-login" onClick={handleKakaoLogin}>
-                <img src={ICON.KAKAO_LOGIN} alt="Kakao"/>
-                <span>카카오 로그인</span>
-              </button>
-              <button className="social-button naver-login" onClick={handleNaverLogin}>
-                <img src={ICON.NAVER_LOGIN} alt="Naver"/>
-                <span>네이버 로그인</span>
-              </button>
+              <div className="separator-container">
+                <span className="separator">또는</span>
+              </div>
+              <div className="social-login-container">
+                <button className="auth-button kakao-login" onClick={handleKakaoLogin}>
+                  <div className="auth-button-icon">
+                    <img src={ICON.KAKAO_LOGIN} alt="Kakao" />
+                  </div>
+                  <span className="auth-button-text">카카오로 로그인</span>
+                </button>
+                <button className="auth-button naver-login" onClick={handleNaverLogin}>
+                  <div className="auth-button-icon">
+                    <img src={ICON.NAVER_LOGIN} alt="Naver" />
+                  </div>
+                  <span className="auth-button-text">네이버로 로그인</span>
+                </button>
               </div>
             {/* 로그인 폼 또는 기타 컨텐츠 */}
             </div>

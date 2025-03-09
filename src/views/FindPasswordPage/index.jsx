@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { ICON } from "constant";
 
 function FindPwPage() {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -21,7 +22,7 @@ function FindPwPage() {
     if (!phoneNumber) {
       alert('휴대폰 번호를 입력해주세요.');
       return;
-  }
+    }
     event.preventDefault();
     try {
       const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/send-code`, {
@@ -90,51 +91,64 @@ function FindPwPage() {
     }
   };
   return (
-    <div className="find-id-form-container">
-      <form className="signup-form">
-      <h2>비밀번호 찾기</h2>
-      <div className="input-group2">
-          <input type="text" id="username" value={username} onChange={handleUsernameChange} required placeholder="아이디"/>
-      </div>
-      <div className="input-group2">
-        <input
-          type="tel"
-          id="phoneNumber"
-          value={phoneNumber}
-          onChange={handlePhoneNumberChange}
-          placeholder="휴대폰 번호"
-          disabled={codeSent}
-        />
-        <button onClick={sendVerificationCode} disabled={codeSent} className="check-button">
-          코드발송
-        </button>
-      </div>
-      
-      {codeSent && (
-        <>
-        <div className="input-group2">
-          <input
-            type="text"
-            value={verificationCode}
-            onChange={(e) => setVerificationCode(e.target.value)}
-            placeholder="인증 코드"
-          />
-          <button type="button" onClick={verifyCode} disabled={isVerified} className="check-button">
-            인증하기
-          </button>
+    <div className="find-id-modal-overlay">
+      <div className="find-id-form-container">
+        <button className="find-close-button" onClick={() => navigate('/')}>×</button>
+        <div className="signup-header">
+          <img src={ICON.LOGO} alt="PRM 로고" className="signup-logo" />
+        </div>
+        <form className="signup-form">
+          <h2>비밀번호 찾기</h2>
+          <div className="input-group2">
+            <input type="text" id="username" value={username} onChange={handleUsernameChange} required placeholder="아이디"/>
           </div>
-        </>
-      )}
-        <button type="button" onClick={findPw} className="signup-button" disabled={foundPw}>
-          비밀번호 찾기
-        </button>
-      {foundPw && (
-        <>
-        </>
-        )}
-      {error && <p style={{ color: 'red', margin:'20px 0 0 0 ' }}>{error}</p>}
-      <p style={{ color:'#fff', marginTop:'30px', textAlign:'left' }}><Link to="/" style={{ color: 'rgb(97 139 255)', textDecoration: 'none' }}>로그인페이지 돌아가기</Link></p>
-      </form>
+          <div className="input-group2">
+            <input
+              type="tel"
+              id="phoneNumber"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+              placeholder="휴대폰 번호"
+              disabled={codeSent}
+            />
+            <button onClick={sendVerificationCode} disabled={codeSent} className="check-button">
+              코드발송
+            </button>
+          </div>
+          
+          {codeSent && (
+            <>
+            <div className="input-group2">
+              <input
+                type="text"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="인증 코드"
+              />
+              <button type="button" onClick={verifyCode} disabled={isVerified} className="check-button">
+                인증하기
+              </button>
+              </div>
+            </>
+          )}
+            <button type="button" onClick={findPw} className="signup-button" disabled={foundPw}>
+              비밀번호 찾기
+            </button>
+          {foundPw && (
+            <>
+            </>
+            )}
+          {error && <p style={{ color: 'red', margin:'20px 0 0 0 ' }}>{error}</p>}
+          <div className="link-container">
+            <p className="login-link-container" style={{ textAlign:'left' }}>
+              <Link to="/" className="login-link">로그인페이지 돌아가기</Link>
+            </p>
+            <p className="login-link-container" style={{ textAlign:'right' }}>
+              <Link to="/findId" className="login-link">아이디 찾기</Link>
+            </p>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

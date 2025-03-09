@@ -170,51 +170,115 @@ function Signup() {
   };
   // JSX를 사용한 폼 렌더링
   return (
+    <div className="signup-modal-overlay">
       <div className="signup-form-container">
-      <form onSubmit={handleSubmit} className="signup-form">
-        <h2>회원가입</h2>
-        <div className="input-group2">
-          <input type="text" id="username" value={username} onChange={handleUsernameChange} required placeholder="아이디" />
-          <button type="button" onClick={checkUsernameAvailability} className="check-button">중복확인</button>
-          {!usernameValid && <p className="error-message">* 4자리 이상의 영문 혹은 영문, 숫자를 조합하여 입력해 주세요</p>}
+        <button className="signup-close-button" onClick={() => navigate('/')}>×</button>
+        <div className="signup-header">
+          <img src={ICON.LOGO} alt="PRM 로고" className="signup-logo" />
+          <h3 className="signup-description">10초만에 회원가입하고 <br /> <strong>무제한 무료</strong>로 견적서 받아보세요!</h3>
         </div>
-        <div className="input-group2">
-          <input type="password" id="password" value={password} onChange={handlePasswordChange} required placeholder="비밀번호" />
-          {!passwordValid && <p className="error-message">* 영문, 숫자, 특수문자를 조합하여 8자리 이상 입력해 주세요</p>}
-        </div>
-        <div className="input-group2">
-          <input type="password" id="password-confirm" value={passwordConfirm} onChange={handlePasswordConfirmChange} required placeholder="비밀번호 확인" />
-          {!passwordsMatch && <p className="error-message">비밀번호가 일치하지 않습니다.</p>}
-        </div>
-        <div className="input-group2">
-          <input type="email" id="email" value={email} onChange={handleEmailChange} required placeholder="이메일" />
-        </div>
-        <div className="input-group2">
-          <input type="tel" id="phoneNumber" value={phoneNumber} onChange={handlePhoneNumberChange} required placeholder="휴대폰번호" />
-          <button onClick={sendVerificationCode} className="check-button" disabled={codeSent}>코드발송</button>
-        </div>
-        {codeSent && (
-          <div className="input-group2">
-            <input type="text" value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} placeholder="인증 코드 입력" />
-            <button type="button" onClick={verifyCode} className="check-button" disabled={isVerified}>인증하기</button>
+        <form onSubmit={handleSubmit} className="signup-form">
+          <div className={`input-group2 ${!usernameValid && username.length > 0 ? 'has-error' : ''}`}>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={handleUsernameChange}
+              placeholder="아이디"
+              required
+            />
+            <button type="button" onClick={checkUsernameAvailability} className="check-button">
+              중복확인
+            </button>
+            {(!usernameValid || !usernameAvailable) && (
+              <div className="button-error-container">
+                {!usernameValid && username.length > 0 && <div className="error-message">아이디는 영문자와 숫자로 4자 이상이어야 합니다.</div>}
+                {!usernameAvailable && <div className="error-message">이미 사용 중인 아이디입니다.</div>}
+              </div>
+            )}
           </div>
-        )}
-        <button type="submit" className="signup-button">회원가입</button>
-        <div className="separator-container">
-          <span className="separator">또는</span>
-        </div>
-        <div className="social-login">
-          <button className="social-button kakao-login" onClick={handleKakaoLogin}>
-            <img src={ICON.KAKAO_LOGIN} alt="Kakao" />
-            <span>카카오 로그인</span>
-          </button>
-          <button className="social-button naver-login" onClick={handleNaverLogin}>
-            <img src={ICON.NAVER_LOGIN} alt="Naver" />
-            <span>네이버 로그인</span>
-          </button>
-        </div>
-        <p style={{ color: '#fff', marginTop: '30px', textAlign: 'center' }}>이미 프로메테우스 회원이신가요? <Link to="/" style={{ color: 'rgb(97 139 255)', textDecoration: 'none' }}>로그인</Link></p>
-      </form>
+          <div className={`input-group2 ${!passwordValid && password.length > 0 ? 'has-error' : ''}`}>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={handlePasswordChange}
+              placeholder="비밀번호"
+              required
+            />
+            {!passwordValid && <div className="error-message">비밀번호는 영문, 숫자, 특수문자를 포함하여 8자 이상이어야 합니다.</div>}
+          </div>
+          <div className="input-group2">
+            <input
+              type="password"
+              id="passwordConfirm"
+              value={passwordConfirm}
+              onChange={handlePasswordConfirmChange}
+              placeholder="비밀번호 확인"
+              required
+            />
+            {!passwordsMatch && passwordConfirm.length > 0 && <div className="error-message">비밀번호가 일치하지 않습니다.</div>}
+          </div>
+          <div className="input-group2">
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={handleEmailChange}
+              placeholder="이메일"
+              required
+            />
+          </div>
+          <div className="input-group2">
+            <input
+              type="tel"
+              id="phoneNumber"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+              placeholder="휴대폰 번호"
+              disabled={codeSent}
+              required
+            />
+            <button onClick={sendVerificationCode} disabled={codeSent} className="check-button">
+              코드발송
+            </button>
+          </div>
+          {codeSent && (
+            <div className="input-group2">
+              <input
+                type="text"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="인증 코드 입력"
+              />
+              <button type="button" onClick={verifyCode} disabled={isVerified} className="check-button">
+                인증하기
+              </button>
+            </div>
+          )}
+          <button type="submit" className="signup-button">회원가입</button>
+          <div className="login-link-container">
+            이미 프로메테우스 회원이신가요? <Link to="/" className="login-link">로그인</Link>
+          </div>
+          <div className="separator-container">
+            <span className="separator">또는</span>
+          </div>
+          <div className="social-login-container">
+            <button className="auth-button kakao-login" onClick={handleKakaoLogin}>
+              <div className="auth-button-icon">
+                <img src={ICON.KAKAO_LOGIN} alt="Kakao" />
+              </div>
+              <span className="auth-button-text">카카오로 시작하기</span>
+            </button>
+            <button className="auth-button naver-login" onClick={handleNaverLogin}>
+              <div className="auth-button-icon">
+                <img src={ICON.NAVER_LOGIN} alt="Naver" />
+              </div>
+              <span className="auth-button-text">네이버로 시작하기</span>
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
