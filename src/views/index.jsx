@@ -16,3 +16,6 @@ export { default as PaymentPage } from "./PaymentPage";
 export { default as SuccessPage } from "./PaymentPage/SuccessPage";
 export { default as FailPage } from "./PaymentPage/FailPage";
 export { default as StatusPage } from "./StatusPage";
+
+// 관리자 페이지 내보내기
+export { AdminLoginPage, DashboardPage, UsersPage, ProjectsPage } from "./AdminPage";

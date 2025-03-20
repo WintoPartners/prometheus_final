@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - new-aws-deploy
+      - final
   pull_request:
     branches:
       - new-aws-deploy
+      - final
 
 jobs:
   build-and-deploy:
