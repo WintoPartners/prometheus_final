@@ -2,9 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 // 환경에 따른 API URL 설정
-const API_URL = process.env.REACT_APP_STAGE === 'production' 
+console.log('AdminAuthContext - 현재 REACT_APP_STAGE 값:', process.env.REACT_APP_STAGE);
+console.log('AdminAuthContext - 현재 REACT_APP_API_ENDPOINT 값:', process.env.REACT_APP_API_ENDPOINT);
+
+const API_URL = process.env.REACT_APP_STAGE !== 'development' 
   ? `${process.env.REACT_APP_API_ENDPOINT}` 
   : 'http://localhost:8080';
+
+console.log(`AdminAuthContext - API URL: ${API_URL}`);
 
 // Context 생성
 const AdminAuthContext = createContext(null);
