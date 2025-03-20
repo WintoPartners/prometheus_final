@@ -4,8 +4,8 @@ import { useAdminAuth } from './AdminAuthContext';
 
 const AdminLoginPage = () => {
   // 개발 환경에서는 환경 변수에서 기본값을 가져옵니다
-//   const defaultUsername = process.env.REACT_APP_STAGE === 'development' ? 'admin' : '';
-//   const defaultPassword = process.env.REACT_APP_STAGE === 'development' ? 'admin123!' : '';
+  const defaultUsername = process.env.REACT_APP_STAGE === 'development' ? '' : '';
+  const defaultPassword = process.env.REACT_APP_STAGE === 'development' ? '' : '';
 
   const [username, setUsername] = useState(defaultUsername);
   const [password, setPassword] = useState(defaultPassword);
