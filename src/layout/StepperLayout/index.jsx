@@ -121,10 +121,10 @@ const StepperLayout = () => {
                       <MenuIcon src={ICON.FILE_DESCRIPTION} alt="마이페이지 아이콘" />
                       마이페이지
                     </MenuItem>
-                    <MenuItem onClick={handleSubscribeClick}>
+                    {/* <MenuItem onClick={handleSubscribeClick}>
                       <MenuIcon src={ICON.WALLET} alt="구독 관리 아이콘" />
                       구독 관리
-                    </MenuItem>
+                    </MenuItem> */}
                     <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
                   </DropdownMenu>
                 )}
@@ -192,7 +192,7 @@ const DropdownMenu = styled.div`
   border-radius: 3px;
   width: 200px;
   overflow: hidden; // 둥근 모서리를 위해 추가
-  font-family: 'Arial', sans-serif; // 모던 폰트 사용
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 
   & a {
     color: black; // 링크 색상 설정
@@ -208,6 +208,7 @@ const MenuItem = styled.div`
   font-size: 14px; // 폰트 크기 조정
   color: #000;
   cursor: pointer;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   
   &:hover {
     background-color: #f1f1f1; // 호버 배경색
@@ -234,6 +235,7 @@ const LogoutButton = styled.button`
   cursor: pointer;
   text-align: center;
   transition: background-color 0.3s, color 0.3s;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 
   &:hover {
     background-color: #007bff; /* 호버 시 배경색 변경 */
