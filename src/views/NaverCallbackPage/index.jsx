@@ -14,15 +14,32 @@ function NaverCallback() {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const state = urlParams.get('state');
+    const error = urlParams.get('error');
     
     console.log('Naver Callback - Code:', code);
     console.log('Naver Callback - State:', state);
+    console.log('Naver Callback - Error:', error);
+    
+    // 로그인이 취소된 경우 처리
+    if (error || !code) {
+      console.log('네이버 로그인이 취소되었거나 에러가 발생했습니다.');
+      navigate('/');
+      return;
+    }
     
     if (requestSent.current) {
       console.log('이미 요청이 진행 중입니다.');
       return;
     }
 
+    // 저장된 state 값과 현재 state 값 비교
+    const savedState = sessionStorage.getItem('naverState');
+    if (state !== savedState) {
+      console.error('State 값이 일치하지 않습니다. CSRF 공격 가능성이 있습니다.');
+      navigate('/');
+      return;
+    }
+    
     if (code && state) {
       requestSent.current = true;
 

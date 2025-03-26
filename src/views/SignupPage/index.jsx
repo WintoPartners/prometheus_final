@@ -163,10 +163,18 @@ function Signup() {
   };
   
   const handleNaverLogin = () => {
-    const clientId = 'UgWovRvNUhyUrNmJ5MtR';  // 네이버에서 발급받은 Client ID
-    const redirectUri = encodeURIComponent(`${process.env.REACT_APP_PAGE}/noauth`);
-    const state = "kookytest"; // CSRF 공격 방지를 위해 사용되는 랜덤 문자열
-    window.location.href = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
+    const clientId = process.env.REACT_APP_NAVER_CLIENT_ID;
+    // 개발 환경과 프로덕션 환경의 URL을 구분
+    const redirectUri = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3000/naver-callback'
+      : `${process.env.REACT_APP_PAGE}/naver-callback`;
+    const state = Math.random().toString(36).substr(2, 11);
+    
+    // state 값 저장
+    sessionStorage.setItem('naverState', state);
+    
+    const naverLoginUrl = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}`;
+    window.location.href = naverLoginUrl;
   };
   // JSX를 사용한 폼 렌더링
   return (
