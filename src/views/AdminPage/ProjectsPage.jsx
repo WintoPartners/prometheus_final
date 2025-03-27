@@ -44,7 +44,6 @@ const ProjectsPage = () => {
                 <th>ID</th>
                 <th>프로젝트명</th>
                 <th>소유자</th>
-                <th>생성일</th>
                 <th>상태</th>
               </tr>
             </thead>
@@ -54,7 +53,6 @@ const ProjectsPage = () => {
                   <td style={{ color: '#333' }}>{project.id}</td>
                   <td style={{ color: '#333', fontWeight: '500' }}>{project.name}</td>
                   <td style={{ color: '#333' }}>{project.owner_name || project.owner_id}</td>
-                  <td style={{ color: '#333' }}>{new Date(project.created_at).toLocaleDateString()}</td>
                   <td>
                     <span className={`status-badge status-${project.status?.toLowerCase() || 'active'}`}>
                       {project.status || '활성'}
