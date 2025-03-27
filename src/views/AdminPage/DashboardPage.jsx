@@ -61,15 +61,6 @@ const DashboardPage = () => {
           <p className="admin-card-value">{stats.projectCount}</p>
         </div>
         
-        <div className="admin-card">
-          <h3 className="admin-card-title">오늘 신규 가입자</h3>
-          <p className="admin-card-value">{stats.todayNewUsers}</p>
-        </div>
-        
-        <div className="admin-card">
-          <h3 className="admin-card-title">이번달 신규 가입자</h3>
-          <p className="admin-card-value">{stats.monthlyNewUsers}</p>
-        </div>
       </div>
       
       <div className="admin-recent-users">
