@@ -456,7 +456,7 @@ function StepperPage() {
 
                   {/* CONSULTING */}
                   <div className="grid-item">
-                    <CustomCheckBox checkId={"CONSULTING"} imgSrc={ICON.WORK_TYPE_CONSULTING} workType={"consulting"} workTypeHeading={"컨설팅"} onChange={() => handleCheckboxChange('consulting')} 
+                    <CustomCheckBox checkId={"CONSULTING"} imgSrc={ICON.WORK_TYPE_CONSULTING} workType={"consulting"} workTypeHeading={"기타 컨설팅"} onChange={() => handleCheckboxChange('consulting')} 
   checked={selectedOptions.includes('consulting')}/>
                   </div>
                 </div>
