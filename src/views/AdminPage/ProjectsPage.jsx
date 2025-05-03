@@ -178,35 +178,17 @@ const ProjectsPage = () => {
       // 로딩 상태 시작
       setDetailsLoading(true);
       
-      // 1. 프로젝트에 직접 uuid 필드가 있는지 확인
-      if (project.uuid) {
-        window.open(`/profileDetail/${project.uuid}`, '_blank');
-        return;
-      }
+      // 프로젝트 ID 확인 (uuid가 있으면 사용, 없으면 숫자 id 사용)
+      const projectId = project.uuid || project.id;
       
-      // 2. 전용 API를 통해 UUID 조회
-      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/api/project/getUUID`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ id: project.id })
-      });
+      // 새로운 API를 사용하여 프로젝트 상세 페이지로 이동
+      // 백엔드에서 숫자 ID를 처리할 수 있도록 업데이트되었으므로 바로 이동
+      console.log(`[프로젝트 상세 페이지 이동] ID: ${projectId}`);
+      window.open(`/profileDetail/${projectId}`, '_blank');
       
-      const data = await response.json();
-      console.log('[UUID API 응답]', data);
-      
-      if (response.ok && data.success && data.uuid) {
-        // UUID를 사용하여 상세 페이지 열기
-        window.open(`/profileDetail/${data.uuid}`, '_blank');
-      } else {
-        // API 호출 실패 시 원래 ID 사용
-        console.warn('UUID를 찾지 못해 원래 ID를 사용합니다:', project.id);
-        window.open(`/profileDetail/${project.id}`, '_blank');
-      }
     } catch (error) {
       console.error('프로젝트 상세 페이지 이동 실패:', error);
-      // 오류 발생 시 기본 ID 사용
-      window.open(`/profileDetail/${project.id}`, '_blank');
+      alert('프로젝트 상세 페이지로 이동하는 중 오류가 발생했습니다.');
     } finally {
       setDetailsLoading(false);
     }
