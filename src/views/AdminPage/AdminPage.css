@@ -577,6 +577,17 @@
   margin-bottom: 20px;
 }
 
+/* API 에러 메시지 스타일 */
+.api-error-message {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left: 3px solid #dc3545;
+  color: #dc3545;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
 /* 반응형 스타일 */
 @media (max-width: 768px) {
   .admin-layout {
