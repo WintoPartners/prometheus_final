@@ -171,52 +171,6 @@ const ProjectsPage = () => {
     return iaData;
   }
 
-  // 프로젝트 UUID 조회 함수
-  async function getProjectUUID(projectId) {
-    console.log(`[프로젝트 ID ${projectId}의 UUID 조회 중...]`);
-    
-    try {
-      // 1. 프로젝트 제안서 정보 API를 통해 UUID 조회 시도
-      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/proposals`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch proposals');
-      }
-      
-      const data = await response.json();
-      console.log('[제안서 목록 응답]', data);
-      
-      // 제안서 목록에서 현재 프로젝트 ID와 일치하는 항목 찾기
-      if (data.proposals && Array.isArray(data.proposals)) {
-        const matchingProposal = data.proposals.find(
-          p => p.id === projectId || p.id === parseInt(projectId)
-        );
-        
-        if (matchingProposal) {
-          console.log('[UUID 찾음]', matchingProposal.id);
-          return matchingProposal.id;
-        }
-      }
-      
-      // 2. 제안서 목록에서 찾지 못한 경우 setProjectDetail API 시도
-      const projectInfo = await fetchTasks(projectId);
-      
-      if (projectInfo && projectInfo.length > 0 && projectInfo[0].uuid) {
-        console.log('[setProjectDetail에서 UUID 찾음]', projectInfo[0].uuid);
-        return projectInfo[0].uuid;
-      }
-      
-      // 3. setProjectDetail에서도 못 찾은 경우 원본 id를 사용
-      return projectId;
-    } catch (error) {
-      console.error('UUID 조회 실패:', error);
-      return projectId;
-    }
-  }
-
   const handleProjectClick = async (project) => {
     console.log('프로젝트 데이터:', project);
     
@@ -230,14 +184,22 @@ const ProjectsPage = () => {
         return;
       }
       
-      // 2. proposals API 또는 setProjectDetail API를 통해 UUID 조회
-      const uuid = await getProjectUUID(project.id);
+      // 2. 전용 API를 통해 UUID 조회
+      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/api/project/getUUID`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id: project.id })
+      });
       
-      if (uuid) {
+      const data = await response.json();
+      console.log('[UUID API 응답]', data);
+      
+      if (response.ok && data.success && data.uuid) {
         // UUID를 사용하여 상세 페이지 열기
-        window.open(`/profileDetail/${uuid}`, '_blank');
+        window.open(`/profileDetail/${data.uuid}`, '_blank');
       } else {
-        // 실패할 경우 기본 ID 사용
+        // API 호출 실패 시 원래 ID 사용
         console.warn('UUID를 찾지 못해 원래 ID를 사용합니다:', project.id);
         window.open(`/profileDetail/${project.id}`, '_blank');
       }
