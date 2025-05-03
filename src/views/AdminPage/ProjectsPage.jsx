@@ -16,6 +16,19 @@ const ProjectsPage = () => {
   const [funcDesc, setFuncDesc] = useState('');
   const [apiErrors, setApiErrors] = useState({});
 
+  // 서버에서 온 데이터 저장
+  const [rfpData, setRfpData] = useState({
+    pro_name: '',
+    pro_budget: '',
+    pro_period: '',
+    pro_service: '',
+    pro_output: '',
+    expected_budget: '',
+    expected_period: '',
+    pro_agency: '',
+    pro_reference: ''
+  });
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
@@ -46,7 +59,8 @@ const ProjectsPage = () => {
     }
   };
 
-  const fetchProjectDetails = async (projectId) => {
+  // 1. 프로젝트 상세 정보 가져오기 (ProfileDetailPage의 fetchTasks와 동일)
+  const fetchRfpData = async (projectId) => {
     try {
       console.log(`[API 호출] setProjectDetail - ID: ${projectId}`);
       const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setProjectDetail`, {
@@ -64,14 +78,15 @@ const ProjectsPage = () => {
       
       const data = await response.json();
       logApiResponse('setProjectDetail', data);
-      return data && data.length > 0 ? data[0] : null;
+      return data;
     } catch (error) {
       console.error('프로젝트 상세 정보 로딩 실패:', error);
       setApiErrors(prev => ({ ...prev, projectDetails: error.message }));
-      return null;
+      return [];
     }
   };
 
+  // 2. IA 데이터 가져오기 (ProfileDetailPage의 setIA와 동일)
   const fetchIaData = async (projectId) => {
     try {
       console.log(`[API 호출] setIADetail - ID: ${projectId}`);
@@ -90,7 +105,7 @@ const ProjectsPage = () => {
       
       const data = await response.json();
       logApiResponse('setIADetail', data);
-      return Array.isArray(data) ? data : [];
+      return data;
     } catch (error) {
       console.error('IA 데이터 로딩 실패:', error);
       setApiErrors(prev => ({ ...prev, iaData: error.message }));
@@ -98,6 +113,7 @@ const ProjectsPage = () => {
     }
   };
 
+  // 3. WBS 데이터 가져오기 (ProfileDetailPage의 fetchWBS와 동일)
   const fetchWbsData = async (projectId) => {
     try {
       console.log(`[API 호출] setWbsDetail - ID: ${projectId}`);
@@ -116,7 +132,7 @@ const ProjectsPage = () => {
       
       const data = await response.json();
       logApiResponse('setWbsDetail', data);
-      return Array.isArray(data) ? data : [];
+      return data;
     } catch (error) {
       console.error('WBS 데이터 로딩 실패:', error);
       setApiErrors(prev => ({ ...prev, wbsData: error.message }));
@@ -124,6 +140,7 @@ const ProjectsPage = () => {
     }
   };
 
+  // 4. 기능 설명 가져오기 (ProfileDetailPage의 fetchFuncDesc와 동일)
   const fetchFuncDesc = async (projectId) => {
     try {
       console.log(`[API 호출] getFuncDesc - ID: ${projectId}`);
@@ -142,21 +159,18 @@ const ProjectsPage = () => {
       
       const data = await response.json();
       logApiResponse('getFuncDesc', data);
-      
-      // 다양한 형태의 응답 처리
-      if (Array.isArray(data) && data.length > 0) {
-        return data[0];
-      } else if (typeof data === 'object') {
-        return data;
-      } else if (typeof data === 'string') {
-        return { description: data };
-      }
-      return '';
+      return data;
     } catch (error) {
       console.error('기능 설명 로딩 실패:', error);
       setApiErrors(prev => ({ ...prev, funcDesc: error.message }));
-      return '';
+      return [];
     }
+  };
+
+  // 프로젝트 데이터 처리 (ProfileDetailPage와 동일한 방식)
+  const preprocessData = (iaData) => {
+    if (!Array.isArray(iaData) || iaData.length === 0) return [];
+    return iaData;
   };
 
   const handleProjectClick = async (project) => {
@@ -167,37 +181,33 @@ const ProjectsPage = () => {
     setApiErrors({});
     
     try {
-      // 먼저 현재 선택된 프로젝트의 기본 정보를 모달에 표시
+      // 기본 정보 설정
       setProjectDetails(project);
       
-      // 각 API 별도 호출로 변경하여 일부 실패해도 나머지는 표시되도록 함
-      const detailsData = await fetchProjectDetails(project.id);
-      if (detailsData) {
-        setProjectDetails(prev => ({
-          ...prev,
-          ...detailsData
-        }));
+      // 1. 프로젝트 RFP 데이터 로드 (ProfileDetailPage의 fetchRfpData와 동일)
+      const projectInfo = await fetchRfpData(project.id);
+      if (projectInfo && projectInfo.length > 0) {
+        setRfpData(projectInfo[0]);
+        console.log("[RFP 데이터]", projectInfo[0]);
       }
       
-      // IA 데이터 로드
-      const iaResult = await fetchIaData(project.id);
-      setIaData(iaResult || []);
+      // 2. IA 데이터 로드 (ProfileDetailPage의 fetchIaData와 동일)
+      const iaInfo = await fetchIaData(project.id);
+      setIaData(preprocessData(iaInfo));
+      console.log("[IA 데이터]", iaInfo);
       
-      // WBS 데이터 로드
-      const wbsResult = await fetchWbsData(project.id);
-      setWbsData(wbsResult || []);
+      // 3. WBS 데이터 로드 (ProfileDetailPage의 getTasks와 동일)
+      const tasksFromServer = await fetchWbsData(project.id);
+      setWbsData(tasksFromServer || []);
+      console.log("[WBS 데이터]", tasksFromServer);
       
-      // 기능 설명 로드
-      const funcDescResult = await fetchFuncDesc(project.id);
-      setFuncDesc(funcDescResult || '');
+      // 4. 기능 설명 로드 (ProfileDetailPage의 fetchFuncDescData와 동일)
+      const funcDescData = await fetchFuncDesc(project.id);
+      if (funcDescData && funcDescData.length > 0) {
+        setFuncDesc(funcDescData[0]);
+        console.log("[기능 설명]", funcDescData[0]);
+      }
       
-      // 최종 데이터 확인
-      console.log('[데이터 로드 완료]', {
-        projectDetails: projectDetails,
-        iaData: iaResult,
-        wbsData: wbsResult,
-        funcDesc: funcDescResult
-      });
     } catch (err) {
       console.error('프로젝트 상세 정보 로딩 실패:', err);
     } finally {
@@ -213,12 +223,23 @@ const ProjectsPage = () => {
     setWbsData([]);
     setFuncDesc('');
     setApiErrors({});
+    setRfpData({
+      pro_name: '',
+      pro_budget: '',
+      pro_period: '',
+      pro_service: '',
+      pro_output: '',
+      expected_budget: '',
+      expected_period: '',
+      pro_agency: '',
+      pro_reference: ''
+    });
   };
 
   // 데이터 유효성 검사
   const hasIaData = Array.isArray(iaData) && iaData.length > 0;
   const hasWbsData = Array.isArray(wbsData) && wbsData.length > 0;
-  const hasFuncDesc = funcDesc && (typeof funcDesc === 'string' || funcDesc.description);
+  const hasFuncDesc = funcDesc && (funcDesc.description || typeof funcDesc === 'string');
   
   // 기능 설명 텍스트 가져오기
   const getFuncDescText = () => {
@@ -236,7 +257,7 @@ const ProjectsPage = () => {
       <div className="modal-overlay" onClick={closeModal}>
         <div className="project-detail-modal" onClick={(e) => e.stopPropagation()}>
           <div className="modal-header">
-            <h3>{projectDetails?.name || projectDetails?.pro_name || '프로젝트 상세'}</h3>
+            <h3>{rfpData?.pro_name || selectedProject?.name || '프로젝트 상세'}</h3>
             <button className="close-button" onClick={closeModal}>×</button>
           </div>
           
@@ -270,31 +291,21 @@ const ProjectsPage = () => {
               <>
                 {activeTab === 'info' && (
                   <div className="modal-tab-content">
-                    <div className="project-summary">
-                      <div className="summary-item owner">
-                        <h4>소유자</h4>
-                        <p>{projectDetails.owner_name || projectDetails.owner_id || '정보 없음'}</p>
-                      </div>
-                      <div className="summary-item status">
-                        <h4>상태</h4>
-                        <span className={`status-badge status-${projectDetails.status?.toLowerCase() || 'active'}`}>
-                          {projectDetails.status || '활성'}
-                        </span>
-                      </div>
-                      <div className="summary-item created">
-                        <h4>생성일</h4>
-                        <p>{projectDetails.created_at ? new Date(projectDetails.created_at).toLocaleDateString() : '정보 없음'}</p>
-                      </div>
+                    {/* 소속 기관 및 프로젝트명 */}
+                    <div className="project-header">
+                      <div className="project-agency">{rfpData?.pro_agency || '-'}</div>
+                      <div className="project-title">{rfpData?.pro_name || selectedProject?.name}</div>
                     </div>
                     
+                    {/* 예상 견적 및 기간 카드 */}
                     <div className="project-info-cards">
                       <div className="info-card">
                         <div className="info-card-header">
                           <h4>예상 견적</h4>
                         </div>
                         <div className="info-card-body">
-                          <p className="info-value">{(projectDetails.pro_budget || projectDetails.budget || 0)}만원</p>
-                          <p className="info-sub">희망 견적: {projectDetails.expected_budget || '정보 없음'} 만원</p>
+                          <p className="info-value">약 <span>{rfpData?.pro_budget || '-'}</span>만원</p>
+                          <p className="info-sub">희망 견적: {rfpData?.expected_budget || '정보 없음'} 만원</p>
                         </div>
                       </div>
                       
@@ -303,25 +314,32 @@ const ProjectsPage = () => {
                           <h4>예상 기간</h4>
                         </div>
                         <div className="info-card-body">
-                          <p className="info-value">{(projectDetails.pro_period || projectDetails.period || '정보 없음')}</p>
-                          <p className="info-sub">희망 기간: {projectDetails.expected_period || '정보 없음'} 개월</p>
+                          <p className="info-value">약 <span>{rfpData?.pro_period || '-'}</span> 미만</p>
+                          <p className="info-sub">희망 기간: {rfpData?.expected_period || '정보 없음'} 개월</p>
                         </div>
                       </div>
                     </div>
                     
+                    {/* 프로젝트 상세 정보 */}
                     <div className="info-details">
                       <div className="detail-row">
                         <span className="detail-label">프로젝트 ID:</span>
                         <span className="detail-value">{projectDetails.id}</span>
                       </div>
                       <div className="detail-row">
-                        <span className="detail-label">기관:</span>
-                        <span className="detail-value">{projectDetails.pro_agency || projectDetails.agency || '정보 없음'}</span>
+                        <span className="detail-label">소유자:</span>
+                        <span className="detail-value">{projectDetails.owner_name || projectDetails.owner_id || '정보 없음'}</span>
                       </div>
-                      {projectDetails.description && (
+                      <div className="detail-row">
+                        <span className="detail-label">상태:</span>
+                        <span className={`status-badge status-${projectDetails.status?.toLowerCase() || 'active'}`}>
+                          {projectDetails.status || '활성'}
+                        </span>
+                      </div>
+                      {projectDetails.created_at && (
                         <div className="detail-row">
-                          <span className="detail-label">설명:</span>
-                          <p className="detail-value description">{projectDetails.description}</p>
+                          <span className="detail-label">생성일:</span>
+                          <span className="detail-value">{new Date(projectDetails.created_at).toLocaleDateString()}</span>
                         </div>
                       )}
                     </div>
@@ -336,48 +354,58 @@ const ProjectsPage = () => {
                       </div>
                     )}
                     
-                    {(projectDetails.pro_service || projectDetails.service) && (
+                    {/* 서비스 요구사항 */}
+                    {rfpData?.pro_service && (
                       <div className="requirement-card">
                         <div className="requirement-header">
                           <h4>서비스 요구사항</h4>
                         </div>
                         <div className="requirement-body">
-                          {(projectDetails.pro_service || projectDetails.service || '').split('\n').map((line, index) => (
+                          {rfpData?.pro_service.split('\n').map((line, index) => (
                             <p key={index}>{line || '-'}</p>
                           ))}
                         </div>
                       </div>
                     )}
                     
-                    {(projectDetails.pro_output || projectDetails.output) && (
+                    {/* 산출물 */}
+                    {rfpData?.pro_output && (
                       <div className="requirement-card">
                         <div className="requirement-header">
                           <h4>필요 산출물</h4>
                         </div>
                         <div className="requirement-body">
-                          {(projectDetails.pro_output || projectDetails.output || '').split('\n').map((line, index) => (
+                          {rfpData?.pro_output.split('\n').map((line, index) => (
                             <p key={index}>{line || '-'}</p>
                           ))}
                         </div>
                       </div>
                     )}
                     
-                    {(projectDetails.pro_reference || projectDetails.reference) && (
+                    {/* 레퍼런스 */}
+                    {rfpData?.pro_reference && (
                       <div className="requirement-card">
                         <div className="requirement-header">
                           <h4>동종업체 레퍼런스</h4>
                         </div>
                         <div className="requirement-body">
-                          <a href={`https://${projectDetails.pro_reference || projectDetails.reference}`} target="_blank" rel="noopener noreferrer">
-                            {projectDetails.pro_reference || projectDetails.reference}
-                          </a>
+                          <div className="reference-info">
+                            <img src="/static/media/plus.5bb7252a.svg" alt="참고" />
+                            <span>참고 하세요!</span>
+                          </div>
+                          <ul className="reference-list">
+                            <li>
+                              <a href={`https://${rfpData?.pro_reference}`} target="_blank" rel="noopener noreferrer">
+                                <img src="/static/media/clip.9440e159.svg" alt="링크" />
+                                <span>{rfpData?.pro_reference}</span>
+                              </a>
+                            </li>
+                          </ul>
                         </div>
                       </div>
                     )}
                     
-                    {!projectDetails.pro_service && !projectDetails.service && 
-                     !projectDetails.pro_output && !projectDetails.output && 
-                     !projectDetails.pro_reference && !projectDetails.reference && (
+                    {!rfpData?.pro_service && !rfpData?.pro_output && !rfpData?.pro_reference && (
                       <div className="no-data-message">
                         요구사항 및 산출물 정보가 없습니다.
                       </div>
