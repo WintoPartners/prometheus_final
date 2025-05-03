@@ -171,53 +171,12 @@ const ProjectsPage = () => {
     return iaData;
   }
 
-  const handleProjectClick = async (project) => {
-    setSelectedProject(project);
-    setDetailsLoading(true);
-    setModalOpen(true);
-    setActiveTab('info');
+  const handleProjectClick = (project) => {
+    console.log('프로젝트 데이터:', project);
     
-    try {
-      // ProfileDetailPage와 완전히 동일한 방식으로 데이터 로드
-      console.log(`프로젝트 ID ${project.id} 데이터 로드 중...`);
-      
-      // 1. 프로젝트 RFP 데이터 로드
-      const projectInfo = await fetchTasks(project.id);
-      if (projectInfo && projectInfo.length > 0) {
-        console.log("[RFP 데이터]", projectInfo[0]);
-        setRfpData(projectInfo[0]);
-        // 프로젝트 기본 정보도 설정
-        setProjectDetails(project);
-      }
-      
-      // 2. IA 데이터 로드
-      const iaInfo = await setIA(project.id);
-      setIaData(preprocessData(iaInfo));
-      console.log("[IA 데이터]", iaInfo);
-      
-      // 3. WBS 데이터 로드
-      const tasksFromServer = await fetchWBS(project.id);
-      // 색상 할당 (ProfileDetailPage와 동일)
-      const tasksWithColor = tasksFromServer.map((task, index) => ({
-        ...task,
-        color: color[index % color.length].back,
-      }));
-      setWbsData(tasksWithColor);
-      setTasks(tasksWithColor);
-      console.log("[WBS 데이터]", tasksFromServer);
-      
-      // 4. 기능 설명 로드
-      const funcDescData = await fetchFuncDesc(project.id);
-      if (funcDescData && funcDescData.length > 0) {
-        setFuncDesc(funcDescData[0]);
-        console.log("[기능 설명]", funcDescData[0]);
-      }
-      
-    } catch (err) {
-      console.error('프로젝트 상세 정보 로딩 실패:', err);
-    } finally {
-      setDetailsLoading(false);
-    }
+    // 프로젝트에 uuid 필드가 있는 경우 사용, 없으면 id 사용
+    const projectId = project.uuid || project.id;
+    window.open(`/profileDetail/${projectId}`, '_blank');
   };
 
   const closeModal = () => {
