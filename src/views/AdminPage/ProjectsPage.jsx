@@ -34,12 +34,24 @@ const ProjectsPage = () => {
     setModalOpen(true);
     
     try {
-      // 프로젝트 상세 정보 가져오기
-      const response = await adminApi.get(`/admin/projects/${project.id}`);
-      setProjectDetails(response.data.data);
+      // 먼저 현재 선택된 프로젝트의 기본 정보를 모달에 표시
+      setProjectDetails(project);
+      
+      // POST 요청으로 setProjectDetail API 사용
+      const response = await adminApi.post('/setProjectDetail', {
+        id: project.id
+      });
+      
+      if (response.data && response.data.length > 0) {
+        // 서버 응답이 있으면 상세 정보 업데이트
+        setProjectDetails({
+          ...project,
+          ...response.data[0]
+        });
+      }
     } catch (err) {
       console.error('프로젝트 상세 정보 로딩 실패:', err);
-      setError('프로젝트 상세 정보를 불러오는 중 오류가 발생했습니다.');
+      // 에러가 발생해도 기본 정보는 표시
     } finally {
       setDetailsLoading(false);
     }
@@ -74,7 +86,7 @@ const ProjectsPage = () => {
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">프로젝트명:</span>
-                  <span className="detail-value">{projectDetails.name}</span>
+                  <span className="detail-value">{projectDetails.name || projectDetails.pro_name}</span>
                 </div>
                 <div className="detail-row">
                   <span className="detail-label">소유자:</span>
@@ -86,10 +98,14 @@ const ProjectsPage = () => {
                     {projectDetails.status || '활성'}
                   </span>
                 </div>
-                {projectDetails.description && (
+                {(projectDetails.description || projectDetails.pro_service) && (
                   <div className="detail-row">
                     <span className="detail-label">설명:</span>
-                    <p className="detail-value description">{projectDetails.description}</p>
+                    <p className="detail-value description">
+                      {projectDetails.description || projectDetails.pro_service?.split('\n').map((line, index) => (
+                        <span key={index}>{line}<br/></span>
+                      ))}
+                    </p>
                   </div>
                 )}
                 {projectDetails.created_at && (
@@ -99,22 +115,42 @@ const ProjectsPage = () => {
                   </div>
                 )}
                 {/* 프로젝트에 관련된 추가 정보 표시 */}
-                {projectDetails.budget && (
+                {(projectDetails.budget || projectDetails.pro_budget) && (
                   <div className="detail-row">
                     <span className="detail-label">예산:</span>
-                    <span className="detail-value">{projectDetails.budget}만원</span>
+                    <span className="detail-value">{projectDetails.budget || projectDetails.pro_budget}만원</span>
                   </div>
                 )}
-                {projectDetails.period && (
+                {(projectDetails.period || projectDetails.pro_period) && (
                   <div className="detail-row">
                     <span className="detail-label">기간:</span>
-                    <span className="detail-value">{projectDetails.period}</span>
+                    <span className="detail-value">{projectDetails.period || projectDetails.pro_period}</span>
                   </div>
                 )}
-                {projectDetails.agency && (
+                {(projectDetails.agency || projectDetails.pro_agency) && (
                   <div className="detail-row">
                     <span className="detail-label">기관:</span>
-                    <span className="detail-value">{projectDetails.agency}</span>
+                    <span className="detail-value">{projectDetails.agency || projectDetails.pro_agency}</span>
+                  </div>
+                )}
+                {projectDetails.pro_output && (
+                  <div className="detail-row">
+                    <span className="detail-label">산출물:</span>
+                    <p className="detail-value description">
+                      {projectDetails.pro_output.split('\n').map((line, index) => (
+                        <span key={index}>{line}<br/></span>
+                      ))}
+                    </p>
+                  </div>
+                )}
+                {projectDetails.pro_reference && (
+                  <div className="detail-row">
+                    <span className="detail-label">레퍼런스:</span>
+                    <span className="detail-value">
+                      <a href={`https://${projectDetails.pro_reference}`} target="_blank" rel="noopener noreferrer">
+                        {projectDetails.pro_reference}
+                      </a>
+                    </span>
                   </div>
                 )}
               </div>
