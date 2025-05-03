@@ -16,7 +16,7 @@ const ProjectsPage = () => {
   const [funcDesc, setFuncDesc] = useState('');
   const [apiErrors, setApiErrors] = useState({});
 
-  // 서버에서 온 데이터 저장
+  // ProfileDetailPage와 정확히 동일한 상태 구조 사용
   const [rfpData, setRfpData] = useState({
     pro_name: '',
     pro_budget: '',
@@ -28,6 +28,17 @@ const ProjectsPage = () => {
     pro_agency: '',
     pro_reference: ''
   });
+
+  const [tasks, setTasks] = useState([]);
+  
+  // 시각화를 위한 색상 배열 (ProfileDetailPage와 동일)
+  const color = [
+    { back: "rgba(255, 89, 89, 0.4)", front: "#FF5959" },
+    { back: "rgba(89, 130, 255, 0.4)", front: "#5982FF" },
+    { back: "rgba(255, 170, 89, 0.4)", front: "#FFAA59" },
+    { back: "rgba(89, 255, 137, 0.4)", front: "#59FF89" },
+    { back: "rgba(211, 89, 255, 0.4)", front: "#D359FF" },
+  ];
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -50,22 +61,13 @@ const ProjectsPage = () => {
     setActiveTab(tab);
   };
 
-  // 로그를 추가하여 API 응답 구조 확인
-  const logApiResponse = (name, data) => {
-    console.log(`[API 응답] ${name}:`, data);
-    console.log(`[API 응답 타입] ${name}:`, typeof data, Array.isArray(data));
-    if (data) {
-      console.log(`[API 응답 구조] ${name}:`, Object.keys(data));
-    }
-  };
-
-  // 1. 프로젝트 상세 정보 가져오기 (ProfileDetailPage의 fetchTasks와 동일)
-  const fetchRfpData = async (projectId) => {
+  // 1. 프로젝트 상세 정보 가져오기 (ProfileDetailPage의 fetchTasks와 완전히 동일)
+  async function fetchTasks(projectId) {
+    console.log(`[API 호출] setProjectDetail - ID: ${projectId}`);
     try {
-      console.log(`[API 호출] setProjectDetail - ID: ${projectId}`);
       const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setProjectDetail`, {
-        method: 'POST',
         credentials: 'include',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -73,26 +75,25 @@ const ProjectsPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`API 요청 실패: ${response.status}`);
+        throw new Error('Server error');
       }
       
       const data = await response.json();
-      logApiResponse('setProjectDetail', data);
+      console.log(`[API 응답] setProjectDetail:`, data);
       return data;
     } catch (error) {
-      console.error('프로젝트 상세 정보 로딩 실패:', error);
-      setApiErrors(prev => ({ ...prev, projectDetails: error.message }));
+      console.error('Failed to fetch project detail:', error);
       return [];
     }
-  };
-
-  // 2. IA 데이터 가져오기 (ProfileDetailPage의 setIA와 동일)
-  const fetchIaData = async (projectId) => {
+  }
+  
+  // 2. IA 데이터 가져오기 (ProfileDetailPage의 setIA와 완전히 동일)
+  async function setIA(projectId) {
+    console.log(`[API 호출] setIADetail - ID: ${projectId}`);
     try {
-      console.log(`[API 호출] setIADetail - ID: ${projectId}`);
       const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setIADetail`, {
-        method: 'POST',
         credentials: 'include',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -100,26 +101,25 @@ const ProjectsPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`IA 데이터 로딩 실패: ${response.status}`);
+        throw new Error('Server error');
       }
       
       const data = await response.json();
-      logApiResponse('setIADetail', data);
+      console.log(`[API 응답] setIADetail:`, data);
       return data;
     } catch (error) {
-      console.error('IA 데이터 로딩 실패:', error);
-      setApiErrors(prev => ({ ...prev, iaData: error.message }));
+      console.error('Failed to fetch IA data:', error);
       return [];
     }
-  };
-
-  // 3. WBS 데이터 가져오기 (ProfileDetailPage의 fetchWBS와 동일)
-  const fetchWbsData = async (projectId) => {
+  }
+  
+  // 3. WBS 데이터 가져오기 (ProfileDetailPage의 fetchWBS와 완전히 동일)
+  async function fetchWBS(projectId) {
+    console.log(`[API 호출] setWbsDetail - ID: ${projectId}`);
     try {
-      console.log(`[API 호출] setWbsDetail - ID: ${projectId}`);
       const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setWbsDetail`, {
-        method: 'POST',
         credentials: 'include',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -127,26 +127,25 @@ const ProjectsPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`WBS 데이터 로딩 실패: ${response.status}`);
+        throw new Error('Server error');
       }
       
       const data = await response.json();
-      logApiResponse('setWbsDetail', data);
+      console.log(`[API 응답] setWbsDetail:`, data);
       return data;
     } catch (error) {
-      console.error('WBS 데이터 로딩 실패:', error);
-      setApiErrors(prev => ({ ...prev, wbsData: error.message }));
+      console.error('Failed to fetch WBS data:', error);
       return [];
     }
-  };
-
-  // 4. 기능 설명 가져오기 (ProfileDetailPage의 fetchFuncDesc와 동일)
-  const fetchFuncDesc = async (projectId) => {
+  }
+  
+  // 4. 기능 설명 가져오기 (ProfileDetailPage의 fetchFuncDesc와 완전히 동일)
+  async function fetchFuncDesc(projectId) {
+    console.log(`[API 호출] getFuncDesc - ID: ${projectId}`);
     try {
-      console.log(`[API 호출] getFuncDesc - ID: ${projectId}`);
       const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/getFuncDesc`, {
-        method: 'POST',
         credentials: 'include',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -154,54 +153,60 @@ const ProjectsPage = () => {
       });
       
       if (!response.ok) {
-        throw new Error(`기능 설명 로딩 실패: ${response.status}`);
+        throw new Error('Server error');
       }
       
       const data = await response.json();
-      logApiResponse('getFuncDesc', data);
+      console.log(`[API 응답] getFuncDesc:`, data);
       return data;
     } catch (error) {
-      console.error('기능 설명 로딩 실패:', error);
-      setApiErrors(prev => ({ ...prev, funcDesc: error.message }));
+      console.error('Failed to fetch function description:', error);
       return [];
     }
-  };
+  }
 
-  // 프로젝트 데이터 처리 (ProfileDetailPage와 동일한 방식)
-  const preprocessData = (iaData) => {
+  // IA 데이터 처리 (ProfileDetailPage와 완전히 동일)
+  function preprocessData(iaData) {
     if (!Array.isArray(iaData) || iaData.length === 0) return [];
     return iaData;
-  };
+  }
 
   const handleProjectClick = async (project) => {
     setSelectedProject(project);
     setDetailsLoading(true);
     setModalOpen(true);
     setActiveTab('info');
-    setApiErrors({});
     
     try {
-      // 기본 정보 설정
-      setProjectDetails(project);
+      // ProfileDetailPage와 완전히 동일한 방식으로 데이터 로드
+      console.log(`프로젝트 ID ${project.id} 데이터 로드 중...`);
       
-      // 1. 프로젝트 RFP 데이터 로드 (ProfileDetailPage의 fetchRfpData와 동일)
-      const projectInfo = await fetchRfpData(project.id);
+      // 1. 프로젝트 RFP 데이터 로드
+      const projectInfo = await fetchTasks(project.id);
       if (projectInfo && projectInfo.length > 0) {
-        setRfpData(projectInfo[0]);
         console.log("[RFP 데이터]", projectInfo[0]);
+        setRfpData(projectInfo[0]);
+        // 프로젝트 기본 정보도 설정
+        setProjectDetails(project);
       }
       
-      // 2. IA 데이터 로드 (ProfileDetailPage의 fetchIaData와 동일)
-      const iaInfo = await fetchIaData(project.id);
+      // 2. IA 데이터 로드
+      const iaInfo = await setIA(project.id);
       setIaData(preprocessData(iaInfo));
       console.log("[IA 데이터]", iaInfo);
       
-      // 3. WBS 데이터 로드 (ProfileDetailPage의 getTasks와 동일)
-      const tasksFromServer = await fetchWbsData(project.id);
-      setWbsData(tasksFromServer || []);
+      // 3. WBS 데이터 로드
+      const tasksFromServer = await fetchWBS(project.id);
+      // 색상 할당 (ProfileDetailPage와 동일)
+      const tasksWithColor = tasksFromServer.map((task, index) => ({
+        ...task,
+        color: color[index % color.length].back,
+      }));
+      setWbsData(tasksWithColor);
+      setTasks(tasksWithColor);
       console.log("[WBS 데이터]", tasksFromServer);
       
-      // 4. 기능 설명 로드 (ProfileDetailPage의 fetchFuncDescData와 동일)
+      // 4. 기능 설명 로드
       const funcDescData = await fetchFuncDesc(project.id);
       if (funcDescData && funcDescData.length > 0) {
         setFuncDesc(funcDescData[0]);
@@ -239,7 +244,7 @@ const ProjectsPage = () => {
   // 데이터 유효성 검사
   const hasIaData = Array.isArray(iaData) && iaData.length > 0;
   const hasWbsData = Array.isArray(wbsData) && wbsData.length > 0;
-  const hasFuncDesc = funcDesc && (funcDesc.description || typeof funcDesc === 'string');
+  const hasFuncDesc = funcDesc && (typeof funcDesc === 'string' || funcDesc.description);
   
   // 기능 설명 텍스트 가져오기
   const getFuncDescText = () => {
@@ -285,15 +290,13 @@ const ProjectsPage = () => {
           <div className="modal-body">
             {detailsLoading ? (
               <div className="modal-loading">데이터를 불러오는 중...</div>
-            ) : !projectDetails ? (
-              <div className="modal-error">프로젝트 상세 정보를 불러올 수 없습니다.</div>
             ) : (
               <>
                 {activeTab === 'info' && (
                   <div className="modal-tab-content">
                     {/* 소속 기관 및 프로젝트명 */}
                     <div className="project-header">
-                      <div className="project-agency">{rfpData?.pro_agency || '-'}</div>
+                      <div className="project-agency">{rfpData?.pro_agency || '정보 없음'}</div>
                       <div className="project-title">{rfpData?.pro_name || selectedProject?.name}</div>
                     </div>
                     
@@ -304,7 +307,7 @@ const ProjectsPage = () => {
                           <h4>예상 견적</h4>
                         </div>
                         <div className="info-card-body">
-                          <p className="info-value">약 <span>{rfpData?.pro_budget || '-'}</span>만원</p>
+                          <p className="info-value">약 <span>{rfpData?.pro_budget || '정보 없음'}</span> 만원</p>
                           <p className="info-sub">희망 견적: {rfpData?.expected_budget || '정보 없음'} 만원</p>
                         </div>
                       </div>
@@ -314,7 +317,7 @@ const ProjectsPage = () => {
                           <h4>예상 기간</h4>
                         </div>
                         <div className="info-card-body">
-                          <p className="info-value">약 <span>{rfpData?.pro_period || '-'}</span> 미만</p>
+                          <p className="info-value">약 <span>{rfpData?.pro_period || '정보 없음'}</span> 미만</p>
                           <p className="info-sub">희망 기간: {rfpData?.expected_period || '정보 없음'} 개월</p>
                         </div>
                       </div>
@@ -324,22 +327,22 @@ const ProjectsPage = () => {
                     <div className="info-details">
                       <div className="detail-row">
                         <span className="detail-label">프로젝트 ID:</span>
-                        <span className="detail-value">{projectDetails.id}</span>
+                        <span className="detail-value">{selectedProject?.id}</span>
                       </div>
                       <div className="detail-row">
                         <span className="detail-label">소유자:</span>
-                        <span className="detail-value">{projectDetails.owner_name || projectDetails.owner_id || '정보 없음'}</span>
+                        <span className="detail-value">{selectedProject?.owner_name || selectedProject?.owner_id || '정보 없음'}</span>
                       </div>
                       <div className="detail-row">
                         <span className="detail-label">상태:</span>
-                        <span className={`status-badge status-${projectDetails.status?.toLowerCase() || 'active'}`}>
-                          {projectDetails.status || '활성'}
+                        <span className={`status-badge status-${selectedProject?.status?.toLowerCase() || 'active'}`}>
+                          {selectedProject?.status || '활성'}
                         </span>
                       </div>
-                      {projectDetails.created_at && (
+                      {selectedProject?.created_at && (
                         <div className="detail-row">
                           <span className="detail-label">생성일:</span>
-                          <span className="detail-value">{new Date(projectDetails.created_at).toLocaleDateString()}</span>
+                          <span className="detail-value">{new Date(selectedProject.created_at).toLocaleDateString()}</span>
                         </div>
                       )}
                     </div>
@@ -348,12 +351,6 @@ const ProjectsPage = () => {
                 
                 {activeTab === 'requirements' && (
                   <div className="modal-tab-content">
-                    {apiErrors.projectDetails && (
-                      <div className="api-error-message">
-                        프로젝트 상세 정보를 불러오는 중 오류가 발생했습니다: {apiErrors.projectDetails}
-                      </div>
-                    )}
-                    
                     {/* 서비스 요구사항 */}
                     {rfpData?.pro_service && (
                       <div className="requirement-card">
@@ -417,12 +414,6 @@ const ProjectsPage = () => {
                   <div className="modal-tab-content">
                     <h3 className="tab-section-title">기능 명세서</h3>
                     
-                    {apiErrors.iaData && (
-                      <div className="api-error-message">
-                        IA 데이터를 불러오는 중 오류가 발생했습니다: {apiErrors.iaData}
-                      </div>
-                    )}
-                    
                     {hasIaData ? (
                       <div className="ia-table-container">
                         <table className="ia-table">
@@ -454,22 +445,10 @@ const ProjectsPage = () => {
                       </div>
                     )}
                     
-                    {apiErrors.funcDesc && (
-                      <div className="api-error-message">
-                        기능 설명을 불러오는 중 오류가 발생했습니다: {apiErrors.funcDesc}
-                      </div>
-                    )}
-                    
                     {hasFuncDesc && (
                       <div className="func-desc">
                         <h4>기능 설명</h4>
                         <p>{getFuncDescText()}</p>
-                      </div>
-                    )}
-                    
-                    {apiErrors.wbsData && (
-                      <div className="api-error-message">
-                        WBS 데이터를 불러오는 중 오류가 발생했습니다: {apiErrors.wbsData}
                       </div>
                     )}
                     
@@ -478,7 +457,7 @@ const ProjectsPage = () => {
                         <h4>작업 분할 구조 (WBS)</h4>
                         <div className="wbs-items">
                           {wbsData.map((task, index) => (
-                            <div key={index} className="wbs-item">
+                            <div key={index} className="wbs-item" style={{backgroundColor: task.color}}>
                               <div className="wbs-item-header">
                                 <span className="wbs-title">{task.name || task.task_name || '작업 항목'}</span>
                                 <span className="wbs-progress">{task.progress || 0}%</span>

@@ -1124,4 +1124,65 @@
 .info-value span {
   font-weight: 700;
   color: #3498db;
+}
+
+/* 정보 없을 때 안내 메시지 */
+.no-additional-info {
+  background-color: #f8f9fa;
+  border-left: 3px solid #6c757d;
+  padding: 15px 20px;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.no-additional-info p {
+  margin: 0 0 8px 0;
+  color: #6c757d;
+}
+
+.no-additional-info p:last-child {
+  margin-bottom: 0;
+}
+
+.admin-help-message {
+  background-color: #f8f9fa;
+  border-left: 3px solid #3498db;
+  padding: 15px 20px;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+.admin-help-message p {
+  margin: 0 0 8px 0;
+  color: #555;
+}
+
+.admin-help-message p:last-child {
+  margin-bottom: 0;
+}
+
+.mock-function-spec {
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+}
+
+.mock-function-spec p {
+  margin: 0 0 10px 0;
+  color: #555;
+}
+
+.mock-function-spec ul {
+  padding-left: 20px;
+  margin: 10px 0 0 0;
+}
+
+.mock-function-spec li {
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.mock-function-spec strong {
+  color: #333;
 } 
