@@ -37,16 +37,26 @@ const ProjectsPage = () => {
       // 먼저 현재 선택된 프로젝트의 기본 정보를 모달에 표시
       setProjectDetails(project);
       
-      // POST 요청으로 setProjectDetail API 사용
-      const response = await adminApi.post('/setProjectDetail', {
-        id: project.id
+      // fetch를 사용하여 직접 API 호출
+      const response = await fetch(`${process.env.REACT_APP_API_ENDPOINT}/setProjectDetail`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: project.id })
       });
       
-      if (response.data && response.data.length > 0) {
+      if (!response.ok) {
+        throw new Error(`API 요청 실패: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      if (data && data.length > 0) {
         // 서버 응답이 있으면 상세 정보 업데이트
         setProjectDetails({
           ...project,
-          ...response.data[0]
+          ...data[0]
         });
       }
     } catch (err) {
